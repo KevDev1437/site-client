@@ -1,3 +1,4 @@
+import CheckoutButton from '@/components/CheckoutButton';
 import Button from '@/components/ui/Button';
 import { Workshop } from '@/data/workshops';
 import Image from 'next/image';
@@ -86,12 +87,16 @@ export default function EventCard({ workshop }: EventCardProps) {
         </div>
         
         {/* CTA Button */}
-        <Button 
-          href={`/workshops/${workshop.slug}`}
-          className="w-full"
-        >
-          Acheter des billets
-        </Button>
+        {workshop.priceStripeId ? (
+          <CheckoutButton priceId={workshop.priceStripeId} />
+        ) : (
+          <Button 
+            href={`/workshops/${workshop.slug}`}
+            className="w-full"
+          >
+            Acheter des billets
+          </Button>
+        )}
       </div>
     </div>
   );
