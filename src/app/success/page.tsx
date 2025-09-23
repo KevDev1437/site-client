@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function SuccessPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-50 text-center">
@@ -5,12 +7,12 @@ export default function SuccessPage() {
       <p className="mt-4 text-gray-700">
         Votre paiement a bien été confirmé. Vous recevrez un email avec les détails de votre atelier.
       </p>
-      <a
+      <Link
         href="/workshops"
         className="mt-6 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
       >
         Retour aux ateliers
-      </a>
+      </Link>
     </div>
   );
 }

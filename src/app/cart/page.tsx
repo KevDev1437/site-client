@@ -1,6 +1,7 @@
 "use client";
 import CheckoutButton from "@/components/CheckoutButton";
 import { useCart } from "@/store/cart";
+import Link from "next/link";
 
 export default function CartPage() {
   const { items, removeItem, clear } = useCart();
@@ -12,12 +13,12 @@ export default function CartPage() {
           <div className="text-6xl mb-4">🛒</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Votre panier est vide</h1>
           <p className="text-gray-600 mb-6">Ajoutez des ateliers à votre panier pour commencer</p>
-          <a
+          <Link
             href="/workshops"
             className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
             Voir les ateliers
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -66,12 +67,12 @@ export default function CartPage() {
             
             <div className="flex space-x-4">
               <CheckoutButton isCart />
-              <a
+              <Link
                 href="/workshops"
                 className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-center font-medium"
               >
                 Continuer mes achats
-              </a>
+              </Link>
             </div>
           </div>
         </div>

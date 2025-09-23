@@ -26,9 +26,10 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(rawBody, sig, secret);
-  } catch (err: any) {
-    console.error("❌ Erreur de signature Webhook:", err.message);
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error("❌ Erreur de signature Webhook:", errorMessage);
+    return new Response(`Webhook Error: ${errorMessage}`, { status: 400 });
   }
 
   console.log("📩 Event Stripe reçu:", event.type);
