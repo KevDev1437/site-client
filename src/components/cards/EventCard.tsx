@@ -81,8 +81,8 @@ export default function EventCard({ workshop }: EventCardProps) {
           <span className="font-medium text-lg text-gray-900">
             {workshop.price}€
           </span>
-          <span>
-            {workshop.seats} places disponibles
+          <span className="text-sm text-gray-600">
+            {workshop.seats} places restantes
           </span>
         </div>
         

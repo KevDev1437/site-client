@@ -11,9 +11,9 @@ STRIPE_SECRET_KEY=sk_test_XXXX
 STRIPE_WEBHOOK_SECRET=whsec_XXXX
 
 # Supabase Configuration
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOi...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...
+SUPABASE_URL=https://nhfmaxdkecahngnsczsn.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODM2NSwiZXhwIjoyMDc0MjI0MzY1fQ.placeholder-service-key
 ```
 
 ## Configuration
@@ -22,17 +22,17 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...
 - `NEXT_PUBLIC_SITE_URL=http://localhost:3000`
 - `STRIPE_SECRET_KEY=sk_test_XXXX` (clé de test Stripe)
 - `STRIPE_WEBHOOK_SECRET=whsec_XXXX` (secret du webhook local)
-- `SUPABASE_URL=https://xxxx.supabase.co` (URL de votre projet Supabase)
-- `SUPABASE_ANON_KEY=eyJhbGciOi...` (clé anonyme Supabase)
-- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...` (clé service role pour webhook)
+- `SUPABASE_URL=https://nhfmaxdkecahngnsczsn.supabase.co` (URL de votre projet Supabase)
+- `SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM` (clé anonyme Supabase)
+- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODM2NSwiZXhwIjoyMDc0MjI0MzY1fQ.placeholder-service-key` (clé service role pour webhook)
 
 ### En production (Vercel)
 - `NEXT_PUBLIC_SITE_URL=https://<ton-projet>.vercel.app`
 - `STRIPE_SECRET_KEY=sk_live_XXXX` (clé live Stripe)
 - `STRIPE_WEBHOOK_SECRET=whsec_XXXX` (secret du webhook production)
-- `SUPABASE_URL=https://xxxx.supabase.co` (URL de votre projet Supabase)
-- `SUPABASE_ANON_KEY=eyJhbGciOi...` (clé anonyme Supabase)
-- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...` (clé service role pour webhook)
+- `SUPABASE_URL=https://nhfmaxdkecahngnsczsn.supabase.co` (URL de votre projet Supabase)
+- `SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM` (clé anonyme Supabase)
+- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODM2NSwiZXhwIjoyMDc0MjI0MzY1fQ.placeholder-service-key` (clé service role pour webhook)
 
 ## Étapes de configuration
 

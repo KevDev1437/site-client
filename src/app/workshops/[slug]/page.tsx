@@ -1,5 +1,6 @@
+import CheckoutButton from '@/components/CheckoutButton';
 import Button from '@/components/ui/Button';
-import { workshops } from '@/data/workshops';
+import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
@@ -9,8 +10,12 @@ interface WorkshopDetailPageProps {
   };
 }
 
-export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) {
-  const workshop = workshops.find(w => w.slug === params.slug);
+export default async function WorkshopDetailPage({ params }: WorkshopDetailPageProps) {
+  const { data: workshop } = await supabase
+    .from("workshops")
+    .select("*")
+    .eq("slug", params.slug)
+    .single();
 
   if (!workshop) {
     notFound();
@@ -34,7 +39,7 @@ export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) 
     });
   };
 
-  const seatsLeft = Math.max(0, workshop.seats - 3); // Fake calculation
+  // Les places restantes sont maintenant directement dans workshop.seats depuis Supabase
 
   return (
     <div className="py-20">
@@ -43,7 +48,7 @@ export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) 
         <div className="space-y-6">
           <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
             <Image
-              src={workshop.cover}
+              src={workshop.cover_url || workshop.cover || '/placeholder-workshop.jpg'}
               alt={workshop.title}
               width={800}
               height={450}
@@ -109,7 +114,7 @@ export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) 
               À propos de cet atelier
             </h2>
             <p className="text-gray-600 leading-relaxed text-lg">
-              {workshop.excerpt}
+              {workshop.excerpt || "Découvrez cet atelier créatif dans une ambiance conviviale."}
             </p>
             <p className="text-gray-600 leading-relaxed mt-4">
               Dans une ambiance conviviale et bienveillante, vous découvrirez les techniques 
@@ -132,20 +137,27 @@ export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) 
               </div>
               <div className="text-right">
                 <div className="text-lg font-semibold text-gray-900">
-                  {seatsLeft} places restantes
+                  {workshop.seats} places restantes
                 </div>
                 <div className="text-sm text-gray-600">
-                  sur {workshop.seats} places
+                  Places disponibles
                 </div>
               </div>
             </div>
             
-            <Button 
-              href="/contact"
-              className="w-full text-lg py-4"
-            >
-              Acheter des billets
-            </Button>
+            {workshop.price_stripe_id ? (
+              <CheckoutButton 
+                priceId={workshop.price_stripe_id} 
+                workshopSlug={workshop.slug}
+              />
+            ) : (
+              <Button 
+                href="/contact"
+                className="w-full text-lg py-4"
+              >
+                Acheter des billets
+              </Button>
+            )}
             
             <p className="text-sm text-gray-600 text-center mt-4">
               Paiement sécurisé • Annulation gratuite jusqu&apos;à 24h avant
