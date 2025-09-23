@@ -1,29 +1,30 @@
 import SectionTitle from '@/components/ui/SectionTitle';
+import Image from 'next/image';
 
 const testimonials = [
   {
     id: 1,
     name: "Marie L.",
     photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-    quote: "Un moment magique ! J'ai découvert la peinture à l'huile dans une ambiance incroyable. Sarah est une prof exceptionnelle."
+    quote: "Un moment magique ! J&apos;ai découvert la peinture à l&apos;huile dans une ambiance incroyable. Sarah est une prof exceptionnelle."
   },
   {
     id: 2,
     name: "Thomas M.",
     photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    quote: "L'atelier crochet était parfait pour débuter. J'ai créé mon premier sac et j'en suis très fier !"
+    quote: "L&apos;atelier crochet était parfait pour débuter. J&apos;ai créé mon premier sac et j&apos;en suis très fier !"
   },
   {
     id: 3,
     name: "Sophie D.",
     photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    quote: "L'ambiance est si chaleureuse ! On se sent tout de suite à l'aise. Je recommande vivement ces ateliers."
+    quote: "L&apos;ambiance est si chaleureuse ! On se sent tout de suite à l&apos;aise. Je recommande vivement ces ateliers."
   },
   {
     id: 4,
     name: "Pierre R.",
     photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    quote: "La poterie m'a toujours fasciné. Grâce à cet atelier, j'ai pu enfin m'y mettre. Une expérience inoubliable !"
+    quote: "La poterie m&apos;a toujours fasciné. Grâce à cet atelier, j&apos;ai pu enfin m&apos;y mettre. Une expérience inoubliable !"
   },
   {
     id: 5,
@@ -35,7 +36,7 @@ const testimonials = [
     id: 6,
     name: "Lucas B.",
     photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
-    quote: "La calligraphie moderne m'a ouvert de nouveaux horizons. Un art magnifique enseigné avec passion."
+    quote: "La calligraphie moderne m&apos;a ouvert de nouveaux horizons. Un art magnifique enseigné avec passion."
   }
 ];
 
@@ -56,16 +57,18 @@ export default function TestimonialsPage() {
                 <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
               </svg>
               <p className="text-gray-700 leading-relaxed italic">
-                "{testimonial.quote}"
+                &ldquo;{testimonial.quote}&rdquo;
               </p>
             </div>
             
             {/* Author */}
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-full overflow-hidden">
-                <img
+                <Image
                   src={testimonial.photo}
                   alt={testimonial.name}
+                  width={48}
+                  height={48}
                   className="w-full h-full object-cover"
                 />
               </div>

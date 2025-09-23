@@ -1,12 +1,13 @@
 import SectionTitle from '@/components/ui/SectionTitle';
 import { photos } from '@/data/photos';
+import Image from 'next/image';
 
 export default function PhotoMosaic() {
   return (
     <section className="py-20">
       <SectionTitle 
         title="Nos moments de partage"
-        subtitle="Découvrez l'ambiance chaleureuse de nos ateliers à travers ces instants capturés"
+        subtitle="Découvrez l&apos;ambiance chaleureuse de nos ateliers à travers ces instants capturés"
       />
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
@@ -24,9 +25,11 @@ export default function PhotoMosaic() {
             } ${index === 7 ? 'md:col-span-1' : ''}`}
           >
             <div className="aspect-square">
-              <img
+              <Image
                 src={photo}
-                alt={`Moment d'atelier ${index + 1}`}
+                alt={`Moment d&apos;atelier ${index + 1}`}
+                width={400}
+                height={400}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
               />
             </div>

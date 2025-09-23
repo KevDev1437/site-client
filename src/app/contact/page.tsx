@@ -30,7 +30,7 @@ export default function ContactPage() {
     // Simulate form submission
     setTimeout(() => {
       console.log('Form submitted:', formData);
-      alert('Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.');
+      alert(&quot;Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.&quot;);
       setFormData({
         name: '',
         email: '',
@@ -46,7 +46,7 @@ export default function ContactPage() {
     <div className="py-20">
       <SectionTitle 
         title="Contactez-nous"
-        subtitle="Une question ? Un projet ? N'hésitez pas à nous écrire, nous serons ravis de vous répondre"
+        subtitle="Une question ? Un projet ? N&apos;hésitez pas à nous écrire, nous serons ravis de vous répondre"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -156,7 +156,7 @@ export default function ContactPage() {
               className="w-full"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
+              {isSubmitting ? &apos;Envoi en cours...&apos; : &apos;Envoyer le message&apos;}
             </Button>
           </form>
         </div>

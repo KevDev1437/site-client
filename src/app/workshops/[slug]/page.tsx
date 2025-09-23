@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import { workshops } from '@/data/workshops';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 interface WorkshopDetailPageProps {
@@ -41,9 +42,11 @@ export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) 
         {/* Left side - Image */}
         <div className="space-y-6">
           <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
-            <img
+            <Image
               src={workshop.cover}
               alt={workshop.title}
+              width={800}
+              height={450}
               className="w-full h-full object-cover"
             />
           </div>
@@ -110,7 +113,7 @@ export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) 
             </p>
             <p className="text-gray-600 leading-relaxed mt-4">
               Dans une ambiance conviviale et bienveillante, vous découvrirez les techniques 
-              essentielles pour créer votre propre œuvre. Notre équipe d'artistes expérimentés 
+              essentielles pour créer votre propre œuvre. Notre équipe d&apos;artistes expérimentés 
               vous accompagnera pas à pas pour que vous repartiez avec une création dont vous 
               serez fier.
             </p>
@@ -145,7 +148,7 @@ export default function WorkshopDetailPage({ params }: WorkshopDetailPageProps) 
             </Button>
             
             <p className="text-sm text-gray-600 text-center mt-4">
-              Paiement sécurisé • Annulation gratuite jusqu'à 24h avant
+              Paiement sécurisé • Annulation gratuite jusqu&apos;à 24h avant
             </p>
           </div>
 

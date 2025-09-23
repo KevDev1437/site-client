@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import Image from 'next/image';
 
 export default function Hero() {
   return (
@@ -14,7 +15,7 @@ export default function Hero() {
           </h1>
           
           <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-            Découvrez l'art de la création dans nos ateliers conviviaux. 
+            Découvrez l&apos;art de la création dans nos ateliers conviviaux. 
             Peinture, crochet, poterie... Laissez libre cours à votre créativité 
             dans une ambiance chaleureuse et bienveillante.
           </p>
@@ -29,9 +30,11 @@ export default function Hero() {
         {/* Right side - Image */}
         <div className="relative">
           <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=800&fit=crop"
               alt="Atelier créatif - Yapha Creative Studio"
+              width={800}
+              height={800}
               className="w-full h-full object-cover"
             />
           </div>

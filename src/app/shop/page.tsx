@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
+import Image from 'next/image';
 
 const products = [
   {
@@ -53,9 +54,11 @@ export default function ShopPage() {
           <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
             {/* Product Image */}
             <div className="aspect-square overflow-hidden">
-              <img
+              <Image
                 src={product.image}
                 alt={product.title}
+                width={400}
+                height={400}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -71,7 +74,7 @@ export default function ShopPage() {
                   {product.price}€
                 </span>
                 <Button 
-                  onClick={() => alert("Fonctionnalité panier bientôt disponible !")}
+                  onClick={() => alert(&quot;Fonctionnalité panier bientôt disponible !&quot;)}
                   className="bg-green-600 hover:bg-green-700"
                 >
                   Ajouter au panier

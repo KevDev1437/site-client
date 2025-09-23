@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import { Workshop } from '@/data/workshops';
+import Image from 'next/image';
 
 interface EventCardProps {
   workshop: Workshop;
@@ -22,18 +23,20 @@ export default function EventCard({ workshop }: EventCardProps) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays < 0) return 'Événement passé';
-    if (diffDays === 0) return "Aujourd'hui";
+    if (diffDays === 0) return &quot;Aujourd&apos;hui&quot;;
     if (diffDays === 1) return 'Demain';
-    return `${diffDays} jours avant l'événement`;
+    return `${diffDays} jours avant l&apos;événement`;
   };
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Cover Image */}
       <div className="aspect-video overflow-hidden">
-        <img
+        <Image
           src={workshop.cover}
           alt={workshop.title}
+          width={800}
+          height={450}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />
       </div>
