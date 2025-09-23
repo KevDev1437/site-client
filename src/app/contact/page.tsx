@@ -30,7 +30,7 @@ export default function ContactPage() {
     // Simulate form submission
     setTimeout(() => {
       console.log('Form submitted:', formData);
-      alert(&quot;Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.&quot;);
+      alert("Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.");
       setFormData({
         name: '',
         email: '',
@@ -156,7 +156,7 @@ export default function ContactPage() {
               className="w-full"
               disabled={isSubmitting}
             >
-              {isSubmitting ? &apos;Envoi en cours...&apos; : &apos;Envoyer le message&apos;}
+              {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
             </Button>
           </form>
         </div>
@@ -202,7 +202,7 @@ export default function ContactPage() {
           {/* Opening Hours */}
           <div className="bg-blue-50 rounded-xl p-8">
             <h3 className="text-xl font-semibold text-gray-900 mb-6">
-              Horaires d'ouverture
+              Horaires d&apos;ouverture
             </h3>
             
             <div className="space-y-2 text-gray-700">

@@ -1,3 +1,5 @@
+'use client';
+
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
 import Image from 'next/image';
@@ -74,7 +76,7 @@ export default function ShopPage() {
                   {product.price}€
                 </span>
                 <Button 
-                  onClick={() => alert(&quot;Fonctionnalité panier bientôt disponible !&quot;)}
+                  onClick={() => alert("Fonctionnalité panier bientôt disponible !")}
                   className="bg-green-600 hover:bg-green-700"
                 >
                   Ajouter au panier

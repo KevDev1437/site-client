@@ -87,11 +87,11 @@ export default function ContactTiles() {
       <div className="mt-12 text-center">
         <div className="bg-blue-50 rounded-xl p-8 max-w-2xl mx-auto">
           <h3 className="text-xl font-semibold text-gray-900 mb-3">
-            Besoin d'aide pour choisir ?
+            Besoin d&apos;aide pour choisir ?
           </h3>
           <p className="text-gray-600 mb-4">
             Notre équipe est là pour vous conseiller et vous aider à trouver 
-            l'atelier qui vous correspond le mieux.
+            l&apos;atelier qui vous correspond le mieux.
           </p>
           <a 
             href="/contact"

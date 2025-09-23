@@ -23,7 +23,7 @@ export default function EventCard({ workshop }: EventCardProps) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays < 0) return 'Événement passé';
-    if (diffDays === 0) return &quot;Aujourd&apos;hui&quot;;
+    if (diffDays === 0) return "Aujourd'hui";
     if (diffDays === 1) return 'Demain';
     return `${diffDays} jours avant l&apos;événement`;
   };

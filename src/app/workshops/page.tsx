@@ -10,7 +10,7 @@ export default function WorkshopsPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const filteredAndSortedWorkshops = useMemo(() => {
-    let filtered = workshops.filter(workshop => 
+    const filtered = workshops.filter(workshop => 
       workshop.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       workshop.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
