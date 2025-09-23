@@ -1,5 +1,4 @@
 import CheckoutButton from '@/components/CheckoutButton';
-import Button from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -149,10 +148,13 @@ export default async function WorkshopDetailPage({ params }: WorkshopDetailPageP
             <div className="flex justify-between items-center mb-6">
               <div>
                 <div className="text-3xl font-bold text-gray-900">
-                  {workshop.price}€
+                  30€
                 </div>
                 <div className="text-gray-600">
                   par personne
+                </div>
+                <div className="text-sm text-gray-500 mt-1">
+                  Prix unique pour tous les ateliers
                 </div>
               </div>
               <div className="text-right">
@@ -165,19 +167,10 @@ export default async function WorkshopDetailPage({ params }: WorkshopDetailPageP
               </div>
             </div>
             
-            {workshop.price_stripe_id ? (
-              <CheckoutButton 
-                priceId={workshop.price_stripe_id} 
-                workshopSlug={workshop.slug}
-              />
-            ) : (
-              <Button 
-                href="/contact"
-                className="w-full text-lg py-4"
-              >
-                Acheter des billets
-              </Button>
-            )}
+            <CheckoutButton 
+              priceId={workshop.price_stripe_id} 
+              workshopSlug={workshop.slug}
+            />
             
             <p className="text-sm text-gray-600 text-center mt-4">
               Paiement sécurisé • Annulation gratuite jusqu&apos;à 24h avant
