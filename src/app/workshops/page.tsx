@@ -1,4 +1,4 @@
-import EventCard from "@/components/cards/EventCard";
+import EventCardWrapper from "@/components/cards/EventCardWrapper";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { supabase } from "@/lib/supabase";
 
@@ -75,7 +75,7 @@ export default async function WorkshopsPage() {
       {/* Workshops Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {workshops.map((workshop) => (
-          <EventCard
+          <EventCardWrapper
             key={workshop.id}
             workshop={{
               slug: workshop.slug,
