@@ -1,3 +1,5 @@
+"use client";
+
 import CheckoutButton from '@/components/CheckoutButton';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/store/cart';

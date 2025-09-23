@@ -26,10 +26,12 @@ export default async function WorkshopDetailPage({ params }: WorkshopDetailPageP
     .eq("slug", params.slug)
     .single();
 
-  console.log("📦 Workshop =", workshop);
-  
-  if (!workshop) {
-    console.log("⚠️ Aucun atelier trouvé avec le slug:", params.slug);
+  // Debug seulement en développement
+  if (process.env.NODE_ENV === 'development') {
+    console.log("📦 Workshop =", workshop);
+    if (!workshop) {
+      console.log("⚠️ Aucun atelier trouvé avec le slug:", params.slug);
+    }
   }
 
   if (!workshop) {
