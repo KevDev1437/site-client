@@ -8,7 +8,7 @@ export default function FounderIntro() {
         {/* Left side - Text */}
         <div className="space-y-6">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Hey, <span className="text-blue-600">Moi, c&apos;est KevDevops</span> 👋
+            Hey, <span className="text-blue-600">Moi, c&apos;est KevDevop</span> 👋
           </h2>
           
           <div className="space-y-4 text-lg text-gray-600 leading-relaxed">
