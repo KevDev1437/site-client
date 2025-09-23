@@ -4,6 +4,26 @@ import SectionTitle from '@/components/ui/SectionTitle';
 import { supabase } from '@/lib/supabase';
 
 export default async function EventsGrid() {
+  if (!supabase) {
+    return (
+      <section id="events" className="py-20">
+        <SectionTitle 
+          title="Tes prochains moments préférés"
+          subtitle="Découvrez nos ateliers créatifs et laissez libre cours à votre imagination"
+        />
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">⚠️</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Configuration en cours
+          </h3>
+          <p className="text-gray-600">
+            Les ateliers seront bientôt disponibles
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   const { data: workshops } = await supabase
     .from("workshops")
     .select("id, slug, title, date, location, price, seats, price_stripe_id, cover_url, excerpt")

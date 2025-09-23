@@ -1,3 +1,4 @@
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -47,6 +48,9 @@ export async function POST(req: Request) {
     });
 
     // TODO : insertion Supabase + décrément seats
+    if (!supabaseAdmin) {
+      console.warn("⚠️ Supabase Admin non configuré. Impossible de sauvegarder la commande.");
+    }
   }
 
   // Log tout le reste

@@ -51,7 +51,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 ### Configuration Vercel (IMPORTANT)
 
-**Pour éviter l'erreur "supabaseUrl is required"** :
+**Pour éviter l'erreur "fetch failed" et "supabaseUrl is required"** :
 
 1. **Aller dans Vercel Dashboard** → Votre projet → Settings → Environment Variables
 2. **Ajouter ces variables** :
@@ -62,6 +62,14 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
    - `STRIPE_WEBHOOK_SECRET` = `whsec_XXXX`
 
 3. **Redéployer** après avoir ajouté les variables
+
+### Gestion des erreurs
+
+**Si les variables d'environnement ne sont pas définies** :
+- ✅ Le build ne plante plus
+- ✅ L'application affiche "Configuration en cours" au lieu de crasher
+- ✅ Les logs indiquent les variables manquantes
+- ✅ L'application reste fonctionnelle pour les parties non-Supabase
 
 ## Étapes de configuration
 

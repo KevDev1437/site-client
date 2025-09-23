@@ -11,6 +11,15 @@ interface WorkshopDetailPageProps {
 }
 
 export default async function WorkshopDetailPage({ params }: WorkshopDetailPageProps) {
+  if (!supabase) {
+    return (
+      <div className="py-20 text-center">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">Configuration en cours</h1>
+        <p className="text-gray-600">Cet atelier sera bientôt disponible</p>
+      </div>
+    );
+  }
+
   const { data: workshop } = await supabase
     .from("workshops")
     .select("*")

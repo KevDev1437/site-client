@@ -3,6 +3,15 @@ import SectionTitle from "@/components/ui/SectionTitle";
 import { supabase } from "@/lib/supabase";
 
 export default async function WorkshopsPage() {
+  if (!supabase) {
+    return (
+      <div className="py-20 text-center">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">Configuration en cours</h1>
+        <p className="text-gray-600">Les ateliers seront bientôt disponibles</p>
+      </div>
+    );
+  }
+
   const { data: workshops, error } = await supabase
     .from("workshops")
     .select("id, slug, title, date, location, price, seats, price_stripe_id, cover_url, excerpt")
