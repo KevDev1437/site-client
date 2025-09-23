@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { 
-      apiVersion: process.env.STRIPE_API_VERSION as any || "2025-08-27.basil" 
+      apiVersion: (process.env.STRIPE_API_VERSION as Stripe.LatestApiVersion) || "2025-08-27.basil" 
     });
     console.log("✅ Stripe initialized");
 
