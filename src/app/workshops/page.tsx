@@ -17,6 +17,13 @@ export default async function WorkshopsPage() {
     .select("id, slug, title, date, location, price, seats, price_stripe_id, cover_url, excerpt")
     .order("date", { ascending: true });
 
+  console.log("📦 Workshops data =", workshops);
+  console.log("❌ Workshops error =", error);
+  
+  if (!workshops || workshops.length === 0) {
+    console.log("⚠️ Aucun atelier trouvé côté Supabase");
+  }
+
   if (error) {
     return (
       <div className="py-20 text-center">

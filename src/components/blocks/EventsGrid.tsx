@@ -30,6 +30,12 @@ export default async function EventsGrid() {
     .order("date", { ascending: true })
     .limit(6);
 
+  console.log("📦 Workshops data =", workshops);
+  
+  if (!workshops || workshops.length === 0) {
+    console.log("⚠️ Aucun atelier trouvé côté Supabase");
+  }
+
   return (
     <section id="events" className="py-20">
       <SectionTitle 
