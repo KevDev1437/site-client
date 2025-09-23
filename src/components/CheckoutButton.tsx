@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function CheckoutButton({ priceId }: { priceId: string }) {
+export default function CheckoutButton({ priceId, workshopSlug }: { priceId: string; workshopSlug?: string }) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -10,7 +10,7 @@ export default function CheckoutButton({ priceId }: { priceId: string }) {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({ priceId, workshopSlug }),
       });
       const data = await res.json();
       if (data?.url) window.location.href = data.url;

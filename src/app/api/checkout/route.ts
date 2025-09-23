@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 
 export async function POST(req: Request) {
-  const { priceId } = await req.json();
+  const { priceId, workshopSlug } = await req.json();
 
   if (!process.env.STRIPE_SECRET_KEY) {
     return new Response(JSON.stringify({ error: "Missing STRIPE_SECRET_KEY" }), { status: 500 });
@@ -18,6 +18,7 @@ export async function POST(req: Request) {
     success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/success`,
     cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/cancel`,
     payment_method_types: ["card", "bancontact", "sepa_debit"],
+    metadata: workshopSlug ? { workshopSlug } : {},
   });
 
   return new Response(JSON.stringify({ url: session.url }), {

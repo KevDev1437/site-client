@@ -88,7 +88,7 @@ export default function EventCard({ workshop }: EventCardProps) {
         
         {/* CTA Button */}
         {workshop.priceStripeId ? (
-          <CheckoutButton priceId={workshop.priceStripeId} />
+          <CheckoutButton priceId={workshop.priceStripeId} workshopSlug={workshop.slug} />
         ) : (
           <Button 
             href={`/workshops/${workshop.slug}`}

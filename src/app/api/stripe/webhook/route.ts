@@ -1,3 +1,4 @@
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -41,14 +42,46 @@ export async function POST(req: Request) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const email = session.customer_details?.email || session.customer_email || "unknown";
-    const amount = session.amount_total;
-    const currency = session.currency;
-    console.log("✅ Paiement confirmé:", { email, amount, currency, sessionId: session.id });
+    const amount = session.amount_total || 0;
+    const currency = session.currency || "eur";
+    const workshopSlug = session.metadata?.workshopSlug;
 
-    // TODO:
-    // - Insérer une commande dans la DB Supabase
-    // - Décrémenter places atelier avec session.metadata.workshopSlug
-    // - Envoyer un email de confirmation
+    console.log("✅ Paiement confirmé:", { email, amount, currency, workshopSlug });
+
+    if (workshopSlug) {
+      try {
+        // 1. Trouver l'atelier
+        const { data: workshop } = await supabaseAdmin
+          .from("workshops")
+          .select("id,seats")
+          .eq("slug", workshopSlug)
+          .single();
+
+        if (workshop) {
+          // 2. Insérer la commande
+          await supabaseAdmin.from("orders").insert({
+            workshop_id: workshop.id,
+            email,
+            amount,
+            currency,
+            status: "paid",
+            stripe_session_id: session.id,
+          });
+
+          // 3. Décrémenter les places
+          await supabaseAdmin
+            .from("workshops")
+            .update({ seats: workshop.seats - 1 })
+            .eq("id", workshop.id);
+
+          console.log("✅ Commande enregistrée et places décrémentées");
+        } else {
+          console.error("❌ Atelier non trouvé:", workshopSlug);
+        }
+      } catch (error) {
+        console.error("❌ Erreur lors de l'enregistrement:", error);
+      }
+    }
   } else {
     console.log("ℹ️ Event non géré:", event.type);
   }
