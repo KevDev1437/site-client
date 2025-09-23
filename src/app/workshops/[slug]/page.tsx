@@ -20,18 +20,21 @@ export default async function WorkshopDetailPage({ params }: WorkshopDetailPageP
     );
   }
 
+  // Await params pour Next.js 15
+  const { slug } = await params;
+
   const { data: workshop } = await supabase
     .from("workshops")
     .select("*")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .single();
 
   // Debug seulement en développement
   if (process.env.NODE_ENV === 'development') {
     console.log("📦 Workshop =", workshop);
-    if (!workshop) {
-      console.log("⚠️ Aucun atelier trouvé avec le slug:", params.slug);
-    }
+  if (!workshop) {
+    console.log("⚠️ Aucun atelier trouvé avec le slug:", slug);
+  }
   }
 
   if (!workshop) {

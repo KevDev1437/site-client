@@ -38,6 +38,13 @@ export default function CheckoutButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
+      
+      if (!res.ok) {
+        const errorData = await res.text();
+        console.error("❌ API Error:", res.status, errorData);
+        return;
+      }
+      
       const data = await res.json();
       if (data?.url) window.location.href = data.url;
       else console.error("Stripe error:", data);
