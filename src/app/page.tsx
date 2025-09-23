@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import ContactTiles from '@/components/blocks/ContactTiles';
 import EventsGrid from '@/components/blocks/EventsGridDynamic';
 import FounderIntro from '@/components/blocks/FounderIntro';
