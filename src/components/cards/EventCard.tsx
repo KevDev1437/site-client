@@ -1,5 +1,6 @@
 import CheckoutButton from '@/components/CheckoutButton';
 import Button from '@/components/ui/Button';
+import { useCart } from '@/store/cart';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -20,6 +21,8 @@ interface EventCardProps {
 }
 
 export default function EventCard({ workshop }: EventCardProps) {
+  const { addItem } = useCart();
+  
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR', {
@@ -99,17 +102,37 @@ export default function EventCard({ workshop }: EventCardProps) {
             </span>
           </div>
           
-          {/* CTA Button */}
-          {workshop.priceStripeId ? (
-            <CheckoutButton priceId={workshop.priceStripeId} workshopSlug={workshop.slug} />
-          ) : (
-            <Button 
-              href={`/workshops/${workshop.slug}`}
-              className="w-full"
-            >
-              Acheter des billets
-            </Button>
-          )}
+          {/* CTA Buttons */}
+          <div className="space-y-2">
+            {workshop.priceStripeId ? (
+              <CheckoutButton priceId={workshop.priceStripeId} workshopSlug={workshop.slug} />
+            ) : (
+              <Button 
+                href={`/workshops/${workshop.slug}`}
+                className="w-full"
+              >
+                Acheter des billets
+              </Button>
+            )}
+            
+            {workshop.priceStripeId && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  addItem({
+                    id: workshop.slug,
+                    title: workshop.title,
+                    price: workshop.price,
+                    priceId: workshop.priceStripeId!,
+                  });
+                }}
+                className="w-full px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200 text-sm font-medium"
+              >
+                Ajouter au panier
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </Link>

@@ -1,11 +1,14 @@
 'use client';
 
+import { useCart } from '@/store/cart';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { items } = useCart();
+  const totalQty = items.reduce((acc, i) => acc + i.qty, 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,9 +56,14 @@ export default function NavBar() {
             <button className="hidden md:block text-gray-700 hover:text-blue-600 transition-colors duration-200">
               Se connecter
             </button>
-            <button className="text-2xl hover:scale-110 transition-transform duration-200">
+            <Link href="/cart" className="relative text-2xl hover:scale-110 transition-transform duration-200">
               🛒
-            </button>
+              {totalQty > 0 && (
+                <span className="absolute -top-2 -right-2 inline-flex items-center justify-center rounded-full bg-red-600 text-white text-xs px-1.5 py-0.5 min-w-[18px] h-[18px]">
+                  {totalQty}
+                </span>
+              )}
+            </Link>
 
             {/* Mobile menu button */}
             <button
@@ -91,6 +99,20 @@ export default function NavBar() {
                   {link.label}
                 </Link>
               ))}
+              <Link
+                href="/cart"
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="flex items-center">
+                  🛒 Panier
+                  {totalQty > 0 && (
+                    <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-600 text-white text-xs px-2 py-0.5">
+                      {totalQty}
+                    </span>
+                  )}
+                </span>
+              </Link>
               <button className="block w-full text-left px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors duration-200">
                 Se connecter
               </button>
