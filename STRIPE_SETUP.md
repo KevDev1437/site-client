@@ -49,6 +49,20 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM` (clé anonyme Supabase)
 - `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODM2NSwiZXhwIjoyMDc0MjI0MzY1fQ.placeholder-service-key` (clé service role pour webhook)
 
+### Configuration Vercel (IMPORTANT)
+
+**Pour éviter l'erreur "supabaseUrl is required"** :
+
+1. **Aller dans Vercel Dashboard** → Votre projet → Settings → Environment Variables
+2. **Ajouter ces variables** :
+   - `NEXT_PUBLIC_SUPABASE_URL` = `https://nhfmaxdkecahngnsczsn.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+   - `SUPABASE_SERVICE_ROLE_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+   - `STRIPE_SECRET_KEY` = `sk_live_XXXX`
+   - `STRIPE_WEBHOOK_SECRET` = `whsec_XXXX`
+
+3. **Redéployer** après avoir ajouté les variables
+
 ## Étapes de configuration
 
 1. **Créer un compte Stripe** : https://stripe.com
