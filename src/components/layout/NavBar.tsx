@@ -1,9 +1,10 @@
 'use client';
 
 import { useCart } from '@/store/cart';
+import { Menu, ShoppingCart, User, X } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { User, ShoppingCart, Menu, X } from 'lucide-react';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,9 +43,14 @@ export default function Header() {
           {/* Logo centré */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center group">
-              <div className="text-2xl font-bold text-gray-800 group-hover:text-gray-600 transition-colors duration-200">
-                Yapha Creative Studio
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Yapha Creative Studio"
+                width={200}
+                height={60}
+                className="h-12 w-auto group-hover:opacity-80 transition-opacity duration-200"
+                priority
+              />
             </Link>
           </div>
 
@@ -112,10 +118,16 @@ export default function Header() {
                 <div className="text-center pb-6 border-b border-gray-200">
                   <Link 
                     href="/" 
-                    className="text-xl font-bold text-gray-800"
+                    className="inline-block"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Yapha Creative Studio
+                    <Image
+                      src="/logo.png"
+                      alt="Yapha Creative Studio"
+                      width={150}
+                      height={45}
+                      className="h-10 w-auto mx-auto"
+                    />
                   </Link>
                 </div>
 
