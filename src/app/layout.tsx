@@ -37,6 +37,8 @@ export default function RootLayout({
           backgroundAttachment: 'fixed'
         }}
       >
+        {/* Overlay pour masquer l'image sous header et footer */}
+        <div className="fixed inset-0 bg-white/95 backdrop-blur-sm -z-10"></div>
         <Header />
         <main className="pt-0">
           <Container>
