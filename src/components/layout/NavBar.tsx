@@ -31,7 +31,7 @@ export default function Header() {
   ];
 
   return (
-    <header className={`relative z-50 transition-all duration-300 ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled ? 'shadow-lg backdrop-blur-md' : 'backdrop-blur-sm'
     }`}>
 <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
@@ -46,7 +46,7 @@ export default function Header() {
               <Image
                 src="/logo.png"
                 alt="Yapha Creative Studio"
-                width={990}
+                width={900}
                 height={300}
                 className="h-50 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
                 priority

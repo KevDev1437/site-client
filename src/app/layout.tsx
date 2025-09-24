@@ -38,7 +38,7 @@ export default function RootLayout({
         }}
       >
         <Header />
-        <main className="pt-0">
+        <main className="pt-20">
           <Container>
             {children}
           </Container>
