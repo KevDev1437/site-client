@@ -28,7 +28,14 @@ export default function RootLayout({
   return (
     <html lang="fr" className="light">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900`}
+        style={{
+          backgroundImage: 'url(/body.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
       >
         <Header />
         <main className="pt-0">
