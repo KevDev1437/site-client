@@ -71,8 +71,8 @@ export async function POST(req: Request) {
 
     console.log("💳 Creating Stripe session...");
     
-    // Déterminer l'URL de base
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    // Déterminer l'URL de base et nettoyer les slashes
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, '');
     if (!baseUrl) {
       console.error("❌ Missing NEXT_PUBLIC_SITE_URL");
       return new Response(JSON.stringify({ error: "Missing NEXT_PUBLIC_SITE_URL" }), { 

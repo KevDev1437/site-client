@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +10,23 @@ interface SuccessPageProps {
 
 export default function SuccessPage({ searchParams }: SuccessPageProps) {
   const { session_id } = searchParams;
+  
+  useEffect(() => {
+    // Nettoyer l'URL pour éviter les erreurs de sécurité
+    if (typeof window !== 'undefined') {
+      try {
+        const currentUrl = new URL(window.location.href);
+        const cleanUrl = `${currentUrl.origin}${currentUrl.pathname}${currentUrl.search}`;
+        
+        // Remplacer l'URL actuelle par une version propre
+        if (window.history.replaceState) {
+          window.history.replaceState(null, '', cleanUrl);
+        }
+      } catch (error) {
+        console.warn('Impossible de nettoyer l\'URL:', error);
+      }
+    }
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-50 text-center">
