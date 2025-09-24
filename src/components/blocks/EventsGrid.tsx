@@ -2,6 +2,8 @@ import EventCard from '@/components/cards/EventCard';
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
 
+export const dynamic = "force-dynamic";
+
 interface Workshop {
   id: string;
   slug: string;

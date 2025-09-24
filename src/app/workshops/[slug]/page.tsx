@@ -2,6 +2,8 @@ import CheckoutButton from '@/components/CheckoutButton';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+export const dynamic = "force-dynamic";
+
 interface WorkshopDetailPageProps {
   params: {
     slug: string;
