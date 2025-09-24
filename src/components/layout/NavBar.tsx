@@ -36,7 +36,7 @@ export default function Header() {
     }`}>
 <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
-        <div className="flex items-center justify-between h-64">
+        <div className="flex items-center justify-between h-80">
           {/* Espace vide à gauche pour équilibrer */}
           <div className="w-32"></div>
           
@@ -46,9 +46,9 @@ export default function Header() {
               <Image
                 src="/logo.png"
                 alt="Yapha Creative Studio"
-                width={800}
-                height={240}
-                className="h-48 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
+                width={1000}
+                height={300}
+                className="h-64 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
                 priority
               />
             </Link>
@@ -124,9 +124,9 @@ export default function Header() {
                     <Image
                       src="/logo.png"
                       alt="Yapha Creative Studio"
-                      width={500}
-                      height={150}
-                      className="h-32 w-auto mx-auto hover:scale-110 transition-all duration-300 ease-in-out"
+                      width={600}
+                      height={180}
+                      className="h-40 w-auto mx-auto hover:scale-110 transition-all duration-300 ease-in-out"
                     />
                   </Link>
                 </div>
