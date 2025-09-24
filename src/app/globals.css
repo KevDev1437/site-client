@@ -18,13 +18,22 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Force light mode - disable dark mode */
+html.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --cream: #f6efe7;
+  --cream-light: #faf8f5;
+  --cream-dark: #ede6dc;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --cream: #2a2520;
-    --cream-light: #1f1b17;
-    --cream-dark: #3a332c;
+  html.light {
+    --background: #ffffff;
+    --foreground: #171717;
+    --cream: #f6efe7;
+    --cream-light: #faf8f5;
+    --cream-dark: #ede6dc;
   }
 }
 
