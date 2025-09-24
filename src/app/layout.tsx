@@ -1,5 +1,5 @@
 import Footer from "@/components/layout/Footer";
-import NavBar from "@/components/layout/NavBar";
+import Header from "@/components/layout/NavBar";
 import Container from "@/components/ui/Container";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -30,8 +30,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
       >
-        <NavBar />
-        <main className="pt-20">
+        <Header />
+        <main className="pt-24">
           <Container>
             {children}
           </Container>
