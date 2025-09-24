@@ -33,12 +33,7 @@ export default function Header() {
   return (
     <header className={`relative z-50 transition-all duration-300 ${
       isScrolled ? 'shadow-lg backdrop-blur-md' : 'backdrop-blur-sm'
-    }`} style={{
-      backgroundImage: 'url(/navImages.jpg)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat'
-    }}>
+    }`}>
 <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
         <div className="flex items-center justify-between h-64">
