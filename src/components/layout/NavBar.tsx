@@ -39,9 +39,6 @@ export default function Header() {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat'
     }}>
-      {/* Overlay semi-transparent pour la lisibilité */}
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-      
       <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
         <div className="flex items-center justify-between h-64">
