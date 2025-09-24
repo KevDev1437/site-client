@@ -48,7 +48,12 @@ export default function EventCard({ workshop }: EventCardProps) {
 
   return (
     <Link href={`/workshops/${workshop.slug}`} className="block">
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+      <div className="rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer" style={{
+        backgroundImage: 'url(/body.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
         {/* Cover Image */}
         <div className="aspect-video overflow-hidden">
           <Image
@@ -61,7 +66,10 @@ export default function EventCard({ workshop }: EventCardProps) {
         </div>
         
         {/* Content */}
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-4 relative">
+          {/* Overlay pour la lisibilité */}
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl"></div>
+          <div className="relative z-10 space-y-4">
           {/* Days until event pill */}
           <div className="inline-block">
             <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
@@ -134,6 +142,7 @@ export default function EventCard({ workshop }: EventCardProps) {
                 Ajouter au panier
               </button>
             )}
+          </div>
           </div>
         </div>
       </div>
