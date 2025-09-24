@@ -36,7 +36,7 @@ export default function Header() {
     }`}>
 <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
-        <div className="flex items-center justify-between h-80">
+        <div className="flex items-center justify-between h-20">
           {/* Espace vide à gauche pour équilibrer */}
           <div className="w-32"></div>
           
@@ -48,7 +48,7 @@ export default function Header() {
                 alt="Yapha Creative Studio"
                 width={1000}
                 height={300}
-                className="h-64 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
+                className="h-16 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
                 priority
               />
             </Link>
