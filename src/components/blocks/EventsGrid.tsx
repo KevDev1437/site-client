@@ -2,8 +2,21 @@ import EventCard from '@/components/cards/EventCard';
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
 
+interface Workshop {
+  id: string;
+  slug: string;
+  title: string;
+  date: string;
+  location: string;
+  price: number;
+  seats: number;
+  price_stripe_id?: string;
+  cover_url?: string;
+  excerpt?: string;
+}
+
 export default async function EventsGrid() {
-  let workshops = null;
+  let workshops: Workshop[] | null = null;
   
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/workshops`, {
