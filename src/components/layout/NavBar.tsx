@@ -32,9 +32,17 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-neutral-50/95 shadow-lg backdrop-blur-md' : 'bg-neutral-50/90 backdrop-blur-sm'
-    }`}>
-      <nav className="mx-auto max-w-7xl px-6 lg:px-8">
+      isScrolled ? 'shadow-lg backdrop-blur-md' : 'backdrop-blur-sm'
+    }`} style={{
+      backgroundImage: 'url(/navImages.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }}>
+      {/* Overlay semi-transparent pour la lisibilité */}
+      <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
+      
+      <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
         <div className="flex items-center justify-between h-64">
           {/* Espace vide à gauche pour équilibrer */}
@@ -57,7 +65,7 @@ export default function Header() {
           {/* Actions droite */}
           <div className="flex items-center gap-4">
             {/* Se connecter avec icône */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 text-gray-800 hover:text-gray-600 font-medium text-sm transition-colors duration-200">
+            <button className="hidden md:flex items-center gap-2 px-4 py-2 text-white hover:text-gray-200 font-medium text-sm transition-colors duration-200">
               <User className="w-5 h-5" />
               <span>Se connecter</span>
             </button>
@@ -65,7 +73,7 @@ export default function Header() {
             {/* Panier avec compteur */}
             <Link 
               href="/cart" 
-              className="relative p-2 text-gray-800 hover:text-gray-600 transition-colors duration-200"
+              className="relative p-2 text-white hover:text-gray-200 transition-colors duration-200"
             >
               <ShoppingCart className="w-6 h-6" />
               {totalQty > 0 && (
@@ -77,7 +85,7 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden p-2 text-gray-800 hover:text-gray-600 transition-colors duration-200"
+              className="lg:hidden p-2 text-white hover:text-gray-200 transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Menu"
             >
@@ -87,16 +95,16 @@ export default function Header() {
         </div>
 
         {/* Ligne du bas - Navigation centrée */}
-        <div className="hidden lg:flex items-center justify-center py-4 border-t border-gray-200">
+        <div className="hidden lg:flex items-center justify-center py-4 border-t border-white/30">
           <div className="flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-800 hover:text-gray-600 font-medium text-sm transition-colors duration-200 relative group"
+                className="text-white hover:text-gray-200 font-medium text-sm transition-colors duration-200 relative group"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-600 transition-all duration-200 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
               </Link>
             ))}
           </div>
@@ -112,10 +120,10 @@ export default function Header() {
             ></div>
             
             {/* Mobile Menu */}
-            <div className="absolute top-full left-0 right-0 bg-neutral-50 shadow-xl border-t border-gray-200 z-50">
+            <div className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-xl border-t border-white/30 z-50">
               <div className="px-6 py-8 space-y-6">
                 {/* Logo mobile */}
-                <div className="text-center pb-6 border-b border-gray-200">
+                <div className="text-center pb-6 border-b border-gray-300">
                   <Link 
                     href="/" 
                     className="inline-block"
