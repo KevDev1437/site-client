@@ -1,4 +1,4 @@
-import EventCard from "@/components/cards/EventCardDynamic";
+import EventCard from "@/components/cards/EventCard";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { supabase } from "@/lib/supabase";
 
