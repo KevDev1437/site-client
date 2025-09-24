@@ -15,9 +15,9 @@ STRIPE_WEBHOOK_SECRET=whsec_XXXX
 # STRIPE_API_VERSION=2025-08-27.basil
 
 # Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://nhfmaxdkecahngnsczsn.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODM2NSwiZXhwIjoyMDc0MjI0MzY1fQ.placeholder-service-key
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ## Configuration
@@ -36,18 +36,18 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 - `STRIPE_SECRET_KEY=sk_test_XXXX` (clé de test Stripe)
 - `STRIPE_WEBHOOK_SECRET=whsec_XXXX` (secret du webhook local)
 - `STRIPE_API_VERSION=2025-08-27.basil` (optionnel, version API Stripe)
-- `NEXT_PUBLIC_SUPABASE_URL=https://nhfmaxdkecahngnsczsn.supabase.co` (URL de votre projet Supabase)
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM` (clé anonyme Supabase)
-- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODM2NSwiZXhwIjoyMDc0MjI0MzY1fQ.placeholder-service-key` (clé service role pour webhook)
+- `NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co` (URL de votre projet Supabase)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (clé anonyme Supabase)
+- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (clé service role pour webhook)
 
 ### En production (Vercel)
 - `NEXT_PUBLIC_SITE_URL=https://<ton-projet>.vercel.app`
 - `STRIPE_SECRET_KEY=sk_live_XXXX` (clé live Stripe)
 - `STRIPE_WEBHOOK_SECRET=whsec_XXXX` (secret du webhook production)
 - `STRIPE_API_VERSION=2025-08-27.basil` (optionnel, version API Stripe)
-- `NEXT_PUBLIC_SUPABASE_URL=https://nhfmaxdkecahngnsczsn.supabase.co` (URL de votre projet Supabase)
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM` (clé anonyme Supabase)
-- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODM2NSwiZXhwIjoyMDc0MjI0MzY1fQ.placeholder-service-key` (clé service role pour webhook)
+- `NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co` (URL de votre projet Supabase)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (clé anonyme Supabase)
+- `SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (clé service role pour webhook)
 
 ### Configuration Vercel (IMPORTANT)
 
@@ -55,7 +55,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 1. **Aller dans Vercel Dashboard** → Votre projet → Settings → Environment Variables
 2. **Ajouter ces variables** :
-   - `NEXT_PUBLIC_SUPABASE_URL` = `https://nhfmaxdkecahngnsczsn.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_URL` = `https://your-project.supabase.co`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
    - `SUPABASE_SERVICE_ROLE_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
    - `STRIPE_SECRET_KEY` = `sk_live_XXXX`
@@ -139,7 +139,7 @@ values (
   'En ligne',
   10,
   50,
-  'price_1SAZalLQsAaHfXd9RtoHWImA',
+  'price_1XXXXXXXXXXXXXX',
   'https://files.stripe.com/links/MDB8YWNjdF8xU0FaUUxMUXNBYUhmWGQ5fGZsX3Rlc3RfRUEzNFVPWmhobE5MZmJMZGFiNDVkRlRi00Jd32ctF6',
   'je teste mon premier paiement'
 );

@@ -10,9 +10,17 @@ export async function POST() {
 
   try {
     // Mettre à jour tous les ateliers avec le nouveau price_id
+    const newPriceId = process.env.STRIPE_PRICE_ID;
+    if (!newPriceId) {
+      return new Response(JSON.stringify({ error: "STRIPE_PRICE_ID not configured" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     const { data, error } = await supabaseAdmin
       .from('workshops')
-      .update({ price_stripe_id: 'price_1SAmSlLQsAaHfXd9K0CvjoR6' })
+      .update({ price_stripe_id: newPriceId })
       .neq('price_stripe_id', null);
 
     if (error) {

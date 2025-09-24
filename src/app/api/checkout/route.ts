@@ -72,7 +72,14 @@ export async function POST(req: Request) {
     console.log("💳 Creating Stripe session...");
     
     // Déterminer l'URL de base
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://site-client-hqkwgv385-kevdev1437s-projects.vercel.app";
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    if (!baseUrl) {
+      console.error("❌ Missing NEXT_PUBLIC_SITE_URL");
+      return new Response(JSON.stringify({ error: "Missing NEXT_PUBLIC_SITE_URL" }), { 
+        status: 500, 
+        headers: { "Content-Type": "application/json" } 
+      });
+    }
     console.log("🌐 Base URL:", baseUrl);
     
     // Mode payment pour achats uniques
