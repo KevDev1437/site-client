@@ -48,7 +48,7 @@ export default function Header() {
                 alt="Yapha Creative Studio"
                 width={1000}
                 height={300}
-                className="h-16 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
+                className="h-20 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
                 priority
               />
             </Link>
