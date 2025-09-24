@@ -40,9 +40,9 @@ export default function Header() {
       backgroundRepeat: 'no-repeat'
     }}>
       {/* Overlay semi-transparent pour la lisibilité */}
-      <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
       
-      <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
+      <nav className="relative mx-auto max-w-7xl px-6 lg:px-8"></nav>
         {/* Ligne du haut - Logo centré + Actions droite */}
         <div className="flex items-center justify-between h-64">
           {/* Espace vide à gauche pour équilibrer */}
