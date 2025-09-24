@@ -70,12 +70,17 @@ export async function POST(req: Request) {
     }
 
     console.log("💳 Creating Stripe session...");
+    
+    // Déterminer l'URL de base
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://site-client-hqkwgv385-kevdev1437s-projects.vercel.app";
+    console.log("🌐 Base URL:", baseUrl);
+    
     // Mode payment pour achats uniques
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: sessionLineItems,
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/cancel`,
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/cancel`,
       payment_method_types: ["card", "bancontact", "sepa_debit"],
       metadata,
     });
