@@ -3,7 +3,7 @@ import Stripe from "stripe";
 export async function POST(req: Request) {
   console.log("🔍 API Checkout appelée");
   
-  let priceId, workshopSlug, lineItems;
+  let priceId, workshopSlug, lineItems, productName, productPrice, productId;
   
   try {
     const body = await req.text();
@@ -21,8 +21,11 @@ export async function POST(req: Request) {
     priceId = parsed.priceId;
     workshopSlug = parsed.workshopSlug;
     lineItems = parsed.lineItems;
+    productName = parsed.productName;
+    productPrice = parsed.productPrice;
+    productId = parsed.productId;
     
-    console.log("📋 Parsed data:", { priceId, workshopSlug, lineItems });
+    console.log("📋 Parsed data:", { priceId, workshopSlug, lineItems, productName, productPrice, productId });
   } catch (error) {
     console.error("❌ JSON parsing error:", error);
     return new Response(JSON.stringify({ error: "Invalid JSON" }), { 
@@ -57,10 +60,26 @@ export async function POST(req: Request) {
       metadata = { type: "cart" };
       console.log("🛒 Mode panier:", lineItems);
     } else if (priceId) {
-      // Mode atelier unique
+      // Mode produit unique ou atelier unique
       sessionLineItems = [{ price: priceId, quantity: 1 }];
-      metadata = workshopSlug ? { workshopSlug, type: "single" } : { type: "single" };
-      console.log("🎯 Mode atelier unique:", { priceId, workshopSlug });
+      
+      if (productName && productPrice && productId) {
+        // Mode produit boutique
+        metadata = { 
+          productName, 
+          productPrice: productPrice.toString(), 
+          productId,
+          type: "product" 
+        };
+        console.log("🛍️ Mode produit boutique:", { productName, productPrice, productId });
+      } else if (workshopSlug) {
+        // Mode atelier
+        metadata = { workshopSlug, type: "workshop" };
+        console.log("🎯 Mode atelier:", { priceId, workshopSlug });
+      } else {
+        metadata = { type: "single" };
+        console.log("🎯 Mode générique:", { priceId });
+      }
     } else {
       console.error("❌ Missing priceId or lineItems");
       return new Response(JSON.stringify({ error: "Missing priceId or lineItems" }), { 

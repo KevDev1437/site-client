@@ -3,47 +3,119 @@
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
-const products = [
-  {
-    id: 1,
-    title: "Kit Peinture Aquarelle",
-    price: 29.99,
-    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=400&fit=crop"
-  },
-  {
-    id: 2,
-    title: "Set Pinceaux Premium",
-    price: 24.99,
-    image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=400&fit=crop"
-  },
-  {
-    id: 3,
-    title: "Carnet de Croquis",
-    price: 15.99,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop"
-  },
-  {
-    id: 4,
-    title: "Argile Poterie 2kg",
-    price: 18.99,
-    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=400&fit=crop"
-  },
-  {
-    id: 5,
-    title: "Fil Crochet Bio",
-    price: 12.99,
-    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop"
-  },
-  {
-    id: 6,
-    title: "Coffret Calligraphie",
-    price: 35.99,
-    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=400&fit=crop"
-  }
-];
+interface Product {
+  id: string;
+  title: string;
+  price: number;
+  price_stripe_id: string;
+  image_url: string;
+  description?: string;
+  stock: number;
+  created_at: string;
+}
 
 export default function ShopPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<string | null>(null);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products', {
+          cache: 'no-store'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data.products || []);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching products:', error);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handlePurchase = async (product: Product) => {
+    try {
+      setLoading(product.id);
+      
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: process.env.NEXT_PUBLIC_STRIPE_UNIFIED_PRICE_ID || "price_1QExample",
+          productName: product.title,
+          productPrice: product.price,
+          productId: product.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création de la session de paiement');
+      }
+
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors du paiement. Veuillez réessayer.');
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  if (isLoadingProducts) {
+    return (
+      <div className="py-20">
+        <SectionTitle 
+          title="Notre boutique"
+          subtitle="Découvrez notre sélection de matériel créatif de qualité pour continuer à créer chez vous"
+        />
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">⏳</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Chargement des produits...
+          </h3>
+          <p className="text-gray-600">
+            Veuillez patienter pendant que nous récupérons nos produits
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="py-20">
+        <SectionTitle 
+          title="Notre boutique"
+          subtitle="Découvrez notre sélection de matériel créatif de qualité pour continuer à créer chez vous"
+        />
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">📦</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Aucun produit disponible
+          </h3>
+          <p className="text-gray-600">
+            Nos produits seront bientôt disponibles
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-20">
       <SectionTitle 
@@ -57,7 +129,7 @@ export default function ShopPage() {
             {/* Product Image */}
             <div className="aspect-square overflow-hidden">
               <Image
-                src={product.image}
+                src={product.image_url}
                 alt={product.title}
                 width={400}
                 height={400}
@@ -71,32 +143,46 @@ export default function ShopPage() {
                 {product.title}
               </h3>
               
+              {product.description && (
+                <p className="text-gray-600 text-sm">
+                  {product.description}
+                </p>
+              )}
+              
               <div className="flex justify-between items-center">
                 <span className="text-2xl font-bold text-gray-900">
                   {product.price}€
                 </span>
                 <Button 
-                  onClick={() => alert("Fonctionnalité panier bientôt disponible !")}
-                  className="bg-green-600 hover:bg-green-700"
+                  onClick={() => handlePurchase(product)}
+                  disabled={loading === product.id || product.stock <= 0}
+                  className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
                 >
-                  Ajouter au panier
+                  {product.stock <= 0 ? 'Rupture de stock' : 
+                   loading === product.id ? 'Redirection...' : 'Acheter maintenant'}
                 </Button>
               </div>
+              
+              {product.stock > 0 && (
+                <p className="text-sm text-gray-500">
+                  {product.stock} en stock
+                </p>
+              )}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Coming soon notice */}
+      {/* Information notice */}
       <div className="mt-16 text-center">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-8 max-w-2xl mx-auto">
-          <div className="text-yellow-600 text-4xl mb-4">🚧</div>
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 max-w-2xl mx-auto">
+          <div className="text-blue-600 text-4xl mb-4">🛒</div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Boutique en construction
+            Paiement sécurisé
           </h3>
           <p className="text-gray-600">
-            Notre boutique en ligne sera bientôt disponible ! En attendant, 
-            vous pouvez retrouver tous nos produits directement dans notre atelier.
+            Tous nos paiements sont sécurisés par Stripe. Vous recevrez un email de confirmation 
+            après votre achat.
           </p>
         </div>
       </div>
