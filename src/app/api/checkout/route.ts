@@ -70,6 +70,7 @@ export async function POST(req: Request) {
     }
 
     console.log("💳 Creating Stripe session...");
+    // Mode payment pour achats uniques
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: sessionLineItems,
