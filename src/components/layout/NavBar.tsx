@@ -39,7 +39,7 @@ export default function Header() {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat'
     }}>
-      <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
+<nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
         <div className="flex items-center justify-between h-64">
           {/* Espace vide à gauche pour équilibrer */}
