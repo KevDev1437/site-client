@@ -1,11 +1,25 @@
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 interface SuccessPageProps {
   searchParams: { session_id?: string };
 }
 
 export default function SuccessPage({ searchParams }: SuccessPageProps) {
   const { session_id } = searchParams;
+  
+  // Vérifier que nous sommes dans un environnement sécurisé
+  if (typeof window !== 'undefined') {
+    // Nettoyer l'historique pour éviter les erreurs de sécurité
+    try {
+      if (window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    } catch (error) {
+      console.warn('Impossible de nettoyer l\'historique:', error);
+    }
+  }
   
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-50 text-center">

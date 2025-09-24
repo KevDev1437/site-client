@@ -90,6 +90,10 @@ export async function POST(req: Request) {
       cancel_url: `${baseUrl}/cancel`,
       payment_method_types: ["card", "bancontact", "sepa_debit"],
       metadata,
+      // Configuration pour éviter les erreurs de sécurité
+      automatic_tax: { enabled: false },
+      billing_address_collection: 'auto',
+      shipping_address_collection: { allowed_countries: ['FR', 'BE', 'NL', 'DE'] },
     });
 
     console.log("✅ Stripe session created:", session.id);
