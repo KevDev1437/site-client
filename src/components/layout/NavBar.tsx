@@ -2,8 +2,8 @@
 
 import { useCart } from '@/store/cart';
 import { Menu, ShoppingCart, User, X } from 'lucide-react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Header() {
@@ -36,7 +36,7 @@ export default function Header() {
     }`}>
       <nav className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-40">
           {/* Espace vide à gauche pour équilibrer */}
           <div className="w-32"></div>
           
@@ -46,9 +46,9 @@ export default function Header() {
               <Image
                 src="/logo.png"
                 alt="Yapha Creative Studio"
-                width={250}
-                height={75}
-                className="h-16 w-auto group-hover:opacity-80 transition-opacity duration-200"
+                width={300}
+                height={90}
+                className="h-20 w-auto group-hover:opacity-80 transition-opacity duration-200"
                 priority
               />
             </Link>
@@ -124,9 +124,9 @@ export default function Header() {
                     <Image
                       src="/logo.png"
                       alt="Yapha Creative Studio"
-                      width={180}
-                      height={54}
-                      className="h-12 w-auto mx-auto"
+                      width={220}
+                      height={66}
+                      className="h-16 w-auto mx-auto"
                     />
                   </Link>
                 </div>
