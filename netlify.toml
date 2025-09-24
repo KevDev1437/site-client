@@ -10,12 +10,4 @@
 
 [build.environment]
 SECRETS_SCAN_ENABLED = "false"
-
-# Configuration pour éviter la détection des secrets Supabase côté client
-[build.environment]
-SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
-
-# Variables d'environnement publiques (côté client)
-[build.environment]
-NEXT_PUBLIC_SUPABASE_URL="https://nhfmaxdkecahngnsczsn.supabase"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oZm1heGRrZWNhaG5nbnNjenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDgzNjUsImV4cCI6MjA3NDIyNDM2NX0.3RnJIHR-AXgL2iXzthuDDY60OuBTwWICRpWUVt471SM"
+SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_SITE_URL,STRIPE_API_VERSION"
