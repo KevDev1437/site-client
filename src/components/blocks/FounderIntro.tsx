@@ -13,7 +13,7 @@ export default function FounderIntro() {
           
           <div className="space-y-4 text-lg text-gray-600 leading-relaxed">
             <p>
-              Passionnée d&apos;art depuis toujours, j&apos;ai créé Yapha Creative Studio 
+              Passionnée d&apos;art dpuis toujours, j&apos;ai créé Yapha Creative Studio 
               pour partager ma passion avec vous dans une ambiance chaleureuse et bienveillante.
             </p>
             
