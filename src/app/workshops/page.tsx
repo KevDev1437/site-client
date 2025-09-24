@@ -1,21 +1,26 @@
 import EventCard from "@/components/cards/EventCard";
 import SectionTitle from "@/components/ui/SectionTitle";
-import { supabase } from "@/lib/supabase";
 
 export default async function WorkshopsPage() {
-  if (!supabase) {
-    return (
-      <div className="py-20 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Configuration en cours</h1>
-        <p className="text-gray-600">Les ateliers seront bientôt disponibles</p>
-      </div>
-    );
+  let workshops = null;
+  let error = null;
+  
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/workshops`, {
+      cache: 'no-store'
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      workshops = data.workshops || [];
+    } else {
+      const errorData = await response.json();
+      error = { message: errorData.error || 'Failed to fetch workshops' };
+    }
+  } catch (err) {
+    console.error("❌ Error fetching workshops:", err);
+    error = { message: 'Failed to fetch workshops' };
   }
-
-  const { data: workshops, error } = await supabase
-    .from("workshops")
-    .select("id, slug, title, date, location, price, seats, price_stripe_id, cover_url, excerpt")
-    .order("date", { ascending: true });
 
   // Debug seulement en développement
   if (process.env.NODE_ENV === 'development') {

@@ -1,10 +1,24 @@
 import EventCard from '@/components/cards/EventCard';
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
-import { supabase } from '@/lib/supabase';
 
 export default async function EventsGrid() {
-  if (!supabase) {
+  let workshops = null;
+  
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/workshops`, {
+      cache: 'no-store'
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      workshops = data.workshops?.slice(0, 6) || [];
+    }
+  } catch (error) {
+    console.error("❌ Error fetching workshops:", error);
+  }
+
+  if (!workshops || workshops.length === 0) {
     return (
       <section id="events" className="py-20">
         <SectionTitle 
@@ -23,12 +37,6 @@ export default async function EventsGrid() {
       </section>
     );
   }
-
-  const { data: workshops } = await supabase
-    .from("workshops")
-    .select("id, slug, title, date, location, price, seats, price_stripe_id, cover_url, excerpt")
-    .order("date", { ascending: true })
-    .limit(6);
 
   // Debug seulement en développement
   if (process.env.NODE_ENV === 'development') {

@@ -1,5 +1,4 @@
 import CheckoutButton from '@/components/CheckoutButton';
-import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
@@ -10,23 +9,23 @@ interface WorkshopDetailPageProps {
 }
 
 export default async function WorkshopDetailPage({ params }: WorkshopDetailPageProps) {
-  if (!supabase) {
-    return (
-      <div className="py-20 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Configuration en cours</h1>
-        <p className="text-gray-600">Cet atelier sera bientôt disponible</p>
-      </div>
-    );
-  }
-
   // Await params pour Next.js 15
   const { slug } = await params;
 
-  const { data: workshop } = await supabase
-    .from("workshops")
-    .select("*")
-    .eq("slug", slug)
-    .single();
+  let workshop = null;
+  
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/workshops/${slug}`, {
+      cache: 'no-store'
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      workshop = data.workshop;
+    }
+  } catch (error) {
+    console.error("❌ Error fetching workshop:", error);
+  }
 
   // Debug seulement en développement
   if (process.env.NODE_ENV === 'development') {
