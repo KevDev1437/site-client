@@ -1,9 +1,22 @@
 import EventCard from "@/components/cards/EventCard";
 import SectionTitle from "@/components/ui/SectionTitle";
 
+interface Workshop {
+  id: string;
+  slug: string;
+  title: string;
+  date: string;
+  location: string;
+  price: number;
+  seats: number;
+  price_stripe_id?: string;
+  cover_url?: string;
+  excerpt?: string;
+}
+
 export default async function WorkshopsPage() {
-  let workshops = null;
-  let error = null;
+  let workshops: Workshop[] | null = null;
+  let error: { message: string } | null = null;
   
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/workshops`, {
