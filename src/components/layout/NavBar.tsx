@@ -46,9 +46,9 @@ export default function Header() {
               <Image
                 src="/logo.png"
                 alt="Yapha Creative Studio"
-                width={1000}
+                width={990}
                 height={300}
-                className="h-60 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
+                className="h-50 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
                 priority
               />
             </Link>
