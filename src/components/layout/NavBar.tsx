@@ -59,8 +59,10 @@ export default function Header() {
 
           {/* Actions droite */}
           <div className="flex items-center gap-4">
-            {/* Menu utilisateur ou bouton connexion */}
-            <UserMenu onLogin={openAuthModal} />
+            {/* Menu utilisateur ou bouton connexion - Desktop seulement */}
+            <div className="hidden lg:block">
+              <UserMenu onLogin={openAuthModal} />
+            </div>
             
             {/* Panier avec compteur */}
             <Link 
@@ -162,9 +164,6 @@ export default function Header() {
                       </span>
                     )}
                   </Link>
-                  
-                  {/* Menu utilisateur mobile */}
-                  <UserMenu onLogin={openAuthModal} />
                 </div>
               </div>
             </div>

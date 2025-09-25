@@ -64,18 +64,17 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
         {/* Desktop */}
         <button 
           onClick={onLogin}
-          className="hidden md:flex items-center gap-2 px-4 py-2 text-gris-doux hover:text-dore font-medium text-base transition-colors duration-300"
+          className="hidden lg:flex items-center gap-2 px-4 py-2 text-gris-doux hover:text-dore font-medium text-base transition-colors duration-300"
         >
           <User className="w-5 h-5" />
           <span>Se connecter</span>
         </button>
-        {/* Mobile */}
+        {/* Mobile - Version simplifiée pour le header */}
         <button 
           onClick={onLogin}
-          className="md:hidden flex items-center gap-3 w-full text-left px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+          className="lg:hidden flex items-center gap-2 px-2 py-2 text-gris-doux hover:text-dore transition-colors duration-300"
         >
           <User className="w-5 h-5" />
-          <span>Se connecter</span>
         </button>
       </>
     );
@@ -84,7 +83,7 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
   return (
     <>
       {/* Desktop */}
-      <div className="relative hidden md:block">
+      <div className="relative hidden lg:block">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-4 py-2 text-gris-doux hover:text-dore font-medium text-base transition-colors duration-300"
@@ -129,28 +128,49 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
         )}
       </div>
 
-      {/* Mobile */}
-      <div className="md:hidden space-y-3">
-        <div className="px-4 py-3 bg-gray-50 rounded-lg">
-          <p className="text-sm font-medium text-gray-900">{user.email}</p>
-          <p className="text-xs text-gray-500">Connecté</p>
-        </div>
-        
-        <a 
-          href="/profile"
-          className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+      {/* Mobile - Version simplifiée pour le header */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 px-2 py-2 text-gris-doux hover:text-dore transition-colors duration-300"
         >
-          <Settings className="w-5 h-5" />
-          <span>Profil</span>
-        </a>
-        
-        <button 
-          onClick={handleLogout}
-          className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
-        >
-          <LogOut className="w-5 h-5" />
-          <span>Se déconnecter</span>
+          <User className="w-5 h-5" />
         </button>
+
+        {isOpen && (
+          <>
+            {/* Overlay */}
+            <div 
+              className="fixed inset-0 z-40"
+              onClick={() => setIsOpen(false)}
+            />
+            
+            {/* Menu déroulant mobile */}
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+              <div className="px-4 py-2 border-b border-gray-100">
+                <p className="text-sm font-medium text-gray-900">{user.email}</p>
+                <p className="text-xs text-gray-500">Connecté</p>
+              </div>
+              
+              <a 
+                href="/profile"
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <Settings className="w-4 h-4" />
+                <span>Profil</span>
+              </a>
+              
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Se déconnecter</span>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
