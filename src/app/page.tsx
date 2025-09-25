@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import EmailConfirmationBanner from '@/components/auth/EmailConfirmationBanner';
 import ContactTiles from '@/components/blocks/ContactTiles';
 import EventsGrid from '@/components/blocks/EventsGrid';
 import FounderIntro from '@/components/blocks/FounderIntro';
@@ -11,6 +12,9 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <div className="min-h-screen bg-texture-papier">
+      {/* Banner de confirmation d'email */}
+      <EmailConfirmationBanner />
+      
       {/* Hero Section - "Exprime ton art" */}
       <section className="relative min-h-screen flex items-center justify-center py-20 px-6 bg-beige-clair">
         

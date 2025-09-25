@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 // Debug des variables d'environnement (seulement en développement)
 if (process.env.NODE_ENV === 'development') {
@@ -16,5 +16,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // Créer le client Supabase seulement si les variables sont définies
 export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createSupabaseClient(supabaseUrl, supabaseAnonKey)
   : null;
+
+// Export de la fonction createClient pour les composants client
+export const createClient = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Variables d\'environnement Supabase manquantes');
+  }
+  return createSupabaseClient(supabaseUrl, supabaseAnonKey);
+};

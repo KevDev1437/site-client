@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/NavBar";
 import type { Metadata } from "next";
@@ -29,11 +30,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900 font-sans`}
       >
-        <Header />
-        <main className="pt-20">
-          {children}
-        </main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main className="pt-20">
+            {children}
+          </main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 'use client';
 
+import { useAuthModal } from '@/components/auth/AuthProvider';
+import UserMenu from '@/components/auth/UserMenu';
 import { useCart } from '@/store/cart';
 import { Menu, ShoppingCart, User, X } from 'lucide-react';
 import Image from 'next/image';
@@ -9,6 +11,7 @@ import { useEffect, useState } from 'react';
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { openAuthModal } = useAuthModal();
   const { items } = useCart();
   const totalQty = items.reduce((acc, i) => acc + i.qty, 0);
 
@@ -56,11 +59,8 @@ export default function Header() {
 
           {/* Actions droite */}
           <div className="flex items-center gap-4">
-            {/* Se connecter avec icône */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 text-gris-doux hover:text-dore font-medium text-base transition-colors duration-300">
-              <User className="w-5 h-5" />
-              <span>Se connecter</span>
-            </button>
+            {/* Menu utilisateur ou bouton connexion */}
+            <UserMenu onLogin={openAuthModal} />
             
             {/* Panier avec compteur */}
             <Link 
@@ -163,7 +163,13 @@ export default function Header() {
                     )}
                   </Link>
                   
-                  <button className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200">
+                  <button 
+                    onClick={() => {
+                      openAuthModal();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+                  >
                     <User className="w-5 h-5" />
                     <span>Se connecter</span>
                   </button>
