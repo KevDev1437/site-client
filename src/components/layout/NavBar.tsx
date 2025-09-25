@@ -26,7 +26,7 @@ export default function Header() {
     { href: '/', label: 'Accueil' },
     { href: '/workshops', label: 'L\'atelier' },
     { href: '/shop', label: 'Boutique' },
-    { href: '/testimonials', label: 'Nos souvenirs' },
+    { href: '/testimonials', label: 'Prestations' },
     { href: '/contact', label: 'Contact' }
   ];
 
