@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/hooks/useAuth';
-import { createClient } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { LogOut, Settings, User } from 'lucide-react';
 import { useState } from 'react';
 
@@ -13,19 +13,23 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { user, loading } = useAuth();
 
-  const supabase = createClient();
+  // Utiliser l'instance exportée de supabase
 
   const handleLogout = async () => {
+    console.log('🔄 Tentative de déconnexion...');
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Erreur lors de la déconnexion:', error);
+        console.error('❌ Erreur lors de la déconnexion:', error);
+        alert('Erreur lors de la déconnexion: ' + error.message);
       } else {
-        console.log('Déconnexion réussie');
-        // Le hook useAuth va automatiquement détecter le changement
+        console.log('✅ Déconnexion réussie');
+        // Forcer la mise à jour en rechargant la page
+        window.location.reload();
       }
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      console.error('❌ Erreur lors de la déconnexion:', error);
+      alert('Erreur lors de la déconnexion');
     }
     setIsOpen(false);
   };
@@ -76,10 +80,14 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
               <p className="text-xs text-gray-500">Connecté</p>
             </div>
             
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+            <a 
+              href="/profile"
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
               <Settings className="w-4 h-4" />
               <span>Profil</span>
-            </button>
+            </a>
             
             <button 
               onClick={handleLogout}

@@ -1,13 +1,11 @@
 'use client';
 
-import { createClient } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 
 export function useAuth() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const supabase = createClient();
 
   useEffect(() => {
     // Récupérer la session actuelle
@@ -22,14 +20,18 @@ export function useAuth() {
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
+        console.log('🔄 Auth state changed:', event, session?.user?.email || 'No user');
         setUser(session?.user || null);
         setLoading(false);
+        
+        if (event === 'SIGNED_OUT') {
+          console.log('✅ Utilisateur déconnecté');
+        }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, []);
 
   return { user, loading };
 }
