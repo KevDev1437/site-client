@@ -129,7 +129,7 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
       </div>
 
       {/* Mobile - Version simplifiée pour le header */}
-      <div className="lg:hidden">
+      <div className="relative lg:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-2 py-2 text-gris-doux hover:text-dore transition-colors duration-300"
@@ -145,8 +145,8 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
               onClick={() => setIsOpen(false)}
             />
             
-            {/* Menu déroulant mobile */}
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+            {/* Menu déroulant mobile - Position fixe pour éviter les problèmes de scroll */}
+            <div className="fixed right-4 top-20 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
               <div className="px-4 py-2 border-b border-gray-100">
                 <p className="text-sm font-medium text-gray-900">{user.email}</p>
                 <p className="text-xs text-gray-500">Connecté</p>
