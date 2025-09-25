@@ -8,41 +8,43 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Vérifier que supabase est initialisé
-    if (!supabase) {
-      console.error('❌ Supabase client non initialisé');
-      setLoading(false);
-      return;
-    }
-
-    // Récupérer la session actuelle
     const getSession = async () => {
       try {
-        const { data: { session } } = await supabase?.auth.getSession() || { data: { session: null } };
-        setUser(session?.user || null);
-        setLoading(false);
+        if (!supabase) {
+          console.error('❌ Supabase client non initialisé');
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        // ✅ On récupère la session de manière sécurisée
+        const { data } = await supabase.auth.getSession();
+        setUser(data?.session?.user ?? null);
       } catch (error) {
         console.error('❌ Erreur lors de la récupération de la session:', error);
+        setUser(null);
+      } finally {
         setLoading(false);
       }
     };
 
     getSession();
 
-    // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase?.auth.onAuthStateChange(
-      (event, session) => {
+    // ✅ On sécurise l'écouteur d'événements
+    const { data: authListener } =
+      supabase?.auth.onAuthStateChange?.((event, session) => {
         console.log('🔄 Auth state changed:', event, session?.user?.email || 'No user');
-        setUser(session?.user || null);
+        setUser(session?.user ?? null);
         setLoading(false);
-        
+
         if (event === 'SIGNED_OUT') {
           console.log('✅ Utilisateur déconnecté');
         }
-      }
-    ) || { subscription: { unsubscribe: () => {} } };
+      }) ?? { data: { subscription: { unsubscribe: () => {} } } };
 
-    return () => subscription?.unsubscribe();
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
   }, []);
 
   return { user, loading };
