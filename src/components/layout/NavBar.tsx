@@ -149,6 +149,11 @@ export default function Header() {
 
                 {/* Actions mobile */}
                 <div className="pt-6 border-t border-gray-200 space-y-4">
+                  {/* Menu utilisateur mobile */}
+                  <div className="px-4">
+                    <UserMenu onLogin={openAuthModal} isMobileMenu={true} />
+                  </div>
+                  
                   <Link
                     href="/cart"
                     className="flex items-center justify-between px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"

@@ -7,9 +7,10 @@ import { useState } from 'react';
 
 interface UserMenuProps {
   onLogin: () => void;
+  isMobileMenu?: boolean;
 }
 
-export default function UserMenu({ onLogin }: UserMenuProps) {
+export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { user, loading } = useAuth();
 
@@ -172,6 +173,32 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
           </>
         )}
       </div>
+
+      {/* Mobile - Version pour le menu mobile */}
+      {isMobileMenu && (
+        <div className="lg:hidden space-y-3">
+          <div className="px-4 py-3 bg-gray-50 rounded-lg">
+            <p className="text-sm font-medium text-gray-900">{user.email}</p>
+            <p className="text-xs text-gray-500">Connecté</p>
+          </div>
+          
+          <a 
+            href="/profile"
+            className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+          >
+            <Settings className="w-5 h-5" />
+            <span>Profil</span>
+          </a>
+          
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Se déconnecter</span>
+          </button>
+        </div>
+      )}
     </>
   );
 }
