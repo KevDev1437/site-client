@@ -132,7 +132,7 @@ export default function Home() {
       <section className="py-24 bg-beige-fonce px-6">
         <div className="max-w-7xl mx-auto px-6">
           <SectionTitle 
-            title="Boutique"
+            title=""
             subtitle="Des carnets, des pinceaux et des œuvres pensées pour t'accompagner dans ton aventure artistique."
           />
           
