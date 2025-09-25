@@ -8,7 +8,7 @@ export default function FounderIntro() {
         {/* Left side - Text */}
         <div className="space-y-6">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Hey, <span className="text-blue-600">Moi, c&apos;est KevDeVops</span> 👋
+            Hey, <span className="text-blue-600">Moi, c&apos;est Julie</span> 👋
           </h2>
           
           <div className="space-y-4 text-lg text-gray-600 leading-relaxed">
@@ -60,7 +60,7 @@ export default function FounderIntro() {
           <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
             <Image
               src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=600&fit=crop"
-              alt="Sarah - Fondatrice de Yapha Creative Studio"
+              alt="Julie - Fondatrice de Yapha Creative Studio"
               width={600}
               height={600}
               className="w-full h-full object-cover"
@@ -76,7 +76,7 @@ export default function FounderIntro() {
             <p className="text-sm text-gray-600 italic">
               &ldquo;Créer, c&apos;est vivre deux fois&rdquo;
             </p>
-            <p className="text-xs text-gray-400 mt-1">- Sarah</p>
+            <p className="text-xs text-gray-400 mt-1">- Julie</p>
           </div>
         </div>
       </div>

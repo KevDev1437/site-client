@@ -47,8 +47,8 @@ export default function EventCard({ workshop }: EventCardProps) {
   };
 
   return (
-    <Link href={`/workshops/${workshop.slug}`} className="block">
-      <div className="card-elegant overflow-hidden hover:card-elevated transition-all duration-300 cursor-pointer">
+    <Link href={`/workshops/${workshop.slug}`} className="block mx-auto">
+      <div className="card-elegant overflow-hidden hover:card-elevated transition-all duration-300 cursor-pointer max-w-sm">
         {/* Cover Image */}
         <div className="aspect-video overflow-hidden">
           <Image

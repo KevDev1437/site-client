@@ -6,7 +6,7 @@ const testimonials = [
     id: 1,
     name: "Marie L.",
     photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-    quote: "Un moment magique ! J&apos;ai découvert la peinture à l&apos;huile dans une ambiance incroyable. Sarah est une prof exceptionnelle."
+    quote: "Un moment magique ! J&apos;ai découvert la peinture à l&apos;huile dans une ambiance incroyable. Julie est une prof exceptionnelle."
   },
   {
     id: 2,

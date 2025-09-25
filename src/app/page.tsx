@@ -16,13 +16,13 @@ export default function Home() {
         
         {/* Contenu centré */}
         <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <h1 className="font-serif text-6xl md:text-8xl font-bold text-gray-900 mb-8 leading-tight">
+          <h1 className="font-serif text-5xl font-bold text-gray-900 leading-tight">
             Exprime ton art
           </h1>
-          <p className="text-2xl text-gris-doux mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="font-sans text-lg text-gray-700 mt-4 max-w-2xl mx-auto">
             Découvre l&apos;univers créatif de Yapha Creative Studio et libère ton potentiel artistique
           </p>
-          <Button href="/workshops" className="btn-primary text-xl px-12 py-6">
+          <Button href="/workshops" className="font-sans text-base px-6 py-3 rounded-full bg-terracotta hover:bg-rose-poudre text-white mt-8">
             Découvrir nos créations
           </Button>
         </div>
@@ -48,10 +48,10 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-4">
+              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
                 Imagine de nouvelles idées
               </h3>
-              <p className="text-gris-doux leading-relaxed">
+              <p className="font-sans text-base text-gray-600 leading-relaxed">
                 Laisse libre cours à ton imagination dans nos ateliers d&apos;écriture créative
               </p>
             </div>
@@ -67,10 +67,10 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-4">
+              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
                 Laisse courir ton pinceau
               </h3>
-              <p className="text-gris-doux leading-relaxed">
+              <p className="font-sans text-base text-gray-600 leading-relaxed">
                 Découvre la peinture dans une ambiance détendue et bienveillante
               </p>
             </div>
@@ -86,10 +86,10 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-4">
+              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
                 Libère ta créativité
               </h3>
-              <p className="text-gris-doux leading-relaxed">
+              <p className="font-sans text-base text-gray-600 leading-relaxed">
                 Explore différentes techniques artistiques à ton rythme
               </p>
             </div>
@@ -105,10 +105,10 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-4">
+              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
                 Crée en communauté
               </h3>
-              <p className="text-gris-doux leading-relaxed">
+              <p className="font-sans text-base text-gray-600 leading-relaxed">
                 Partage tes créations et inspire-toi des autres dans nos ateliers collectifs
               </p>
             </div>
@@ -119,10 +119,10 @@ export default function Home() {
       {/* Section "Crée ton moment" - Diviseur */}
       <section className="relative py-32 bg-terracotta-pastel px-6">
         <div className="relative z-10 text-center">
-          <h2 className="font-serif text-6xl md:text-7xl font-bold text-gray-900 mb-8">
+          <h2 className="font-serif text-4xl font-medium text-gray-900 text-center tracking-wide">
             Crée ton moment 🕯
           </h2>
-          <p className="text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+          <p className="font-sans text-base text-gray-600 mt-2 max-w-2xl mx-auto">
             Accorde-toi une pause, respire, et laisse émerger ton univers intérieur
           </p>
         </div>
@@ -148,11 +148,11 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-2">
+              <h3 className="font-sans text-base font-medium text-gray-900 mb-2">
                 Set de stylos
               </h3>
-              <p className="text-3xl font-bold text-terracotta mb-6">15,00€</p>
-              <Button href="/shop" className="btn-primary">
+              <p className="font-serif text-lg font-semibold text-terracotta mb-6">15,00€</p>
+              <Button href="/shop" className="font-sans text-sm uppercase tracking-wide bg-terracotta hover:bg-rose-poudre text-white px-4 py-2 rounded-lg">
                 Voir plus
               </Button>
             </div>
@@ -168,11 +168,11 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-2">
+              <h3 className="font-sans text-base font-medium text-gray-900 mb-2">
                 Carnet
               </h3>
-              <p className="text-3xl font-bold text-terracotta mb-6">20,00€</p>
-              <Button href="/shop" className="btn-primary">
+              <p className="font-serif text-lg font-semibold text-terracotta mb-6">20,00€</p>
+              <Button href="/shop" className="font-sans text-sm uppercase tracking-wide bg-terracotta hover:bg-rose-poudre text-white px-4 py-2 rounded-lg">
                 Voir plus
               </Button>
             </div>
@@ -188,11 +188,11 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-2">
+              <h3 className="font-sans text-base font-medium text-gray-900 mb-2">
                 Œuvre
               </h3>
-              <p className="text-3xl font-bold text-terracotta mb-6">150,00€</p>
-              <Button href="/shop" className="btn-primary">
+              <p className="font-serif text-lg font-semibold text-terracotta mb-6">150,00€</p>
+              <Button href="/shop" className="font-sans text-sm uppercase tracking-wide bg-terracotta hover:bg-rose-poudre text-white px-4 py-2 rounded-lg">
                 Voir plus
               </Button>
             </div>
@@ -208,11 +208,11 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-2">
+              <h3 className="font-sans text-base font-medium text-gray-900 mb-2">
                 Kit créatif
               </h3>
-              <p className="text-3xl font-bold text-terracotta mb-6">35,00€</p>
-              <Button href="/shop" className="btn-primary">
+              <p className="font-serif text-lg font-semibold text-terracotta mb-6">35,00€</p>
+              <Button href="/shop" className="font-sans text-sm uppercase tracking-wide bg-terracotta hover:bg-rose-poudre text-white px-4 py-2 rounded-lg">
                 Voir plus
               </Button>
             </div>
@@ -222,22 +222,22 @@ export default function Home() {
 
       {/* Section Ateliers (EventsGrid intégré) */}
       <section id="events" className="py-24 bg-boutique px-6">
-      <EventsGrid />
+        <EventsGrid />
       </section>
 
       {/* Section Galerie (PhotoMosaic intégré) */}
       <section className="py-24 bg-beige-tres-clair px-6">
-      <PhotoMosaic />
+        <PhotoMosaic />
       </section>
 
       {/* Section Fondatrice (FounderIntro intégré) */}
       <section className="py-24 bg-rose-poudre px-6">
-      <FounderIntro />
+        <FounderIntro />
       </section>
 
       {/* Section Contact (ContactTiles intégré) */}
       <section className="py-24 bg-beige-fonce px-6">
-      <ContactTiles />
+        <ContactTiles />
       </section>
     </div>
   );

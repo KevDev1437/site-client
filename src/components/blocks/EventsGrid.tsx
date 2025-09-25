@@ -36,18 +36,20 @@ export default async function EventsGrid() {
   if (!workshops || workshops.length === 0) {
     return (
       <section id="events" className="py-20">
-        <SectionTitle 
-          title="Tes prochains moments préférés"
-          subtitle="Découvrez nos ateliers créatifs et laissez libre cours à votre imagination"
-        />
-        <div className="text-center py-12">
-          <div className="text-dore text-6xl mb-4">✨</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
-            Configuration en cours
-          </h3>
-          <p className="text-gris-doux">
-            Les ateliers seront bientôt disponibles
-          </p>
+        <div className="max-w-7xl mx-auto px-6">
+          <SectionTitle 
+            title="Tes prochains moments préférés"
+            subtitle="Découvrez nos ateliers créatifs et laissez libre cours à votre imagination"
+          />
+          <div className="text-center py-12">
+            <div className="text-dore text-6xl mb-4">✨</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
+              Configuration en cours
+            </h3>
+            <p className="text-gris-doux">
+              Les ateliers seront bientôt disponibles
+            </p>
+          </div>
         </div>
       </section>
     );
@@ -63,14 +65,15 @@ export default async function EventsGrid() {
 
   return (
     <section id="events" className="py-20">
-      <SectionTitle 
-        title="Tes prochains moments préférés"
-        subtitle="Découvrez nos ateliers créatifs et laissez libre cours à votre imagination"
-      />
-      
-      {workshops && workshops.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
+      <div className="max-w-7xl mx-auto px-6">
+        <SectionTitle 
+          title="Tes prochains moments préférés"
+          subtitle="Découvrez nos ateliers créatifs et laissez libre cours à votre imagination"
+        />
+        
+        {workshops && workshops.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
             {workshops.map((workshop) => (
               <EventCard 
                 key={workshop.id} 
@@ -87,26 +90,27 @@ export default async function EventsGrid() {
                 }} 
               />
             ))}
+            </div>
+            
+            {/* View all button */}
+            <div className="text-center mt-12">
+              <Button href="/workshops" className="btn-secondary">
+                Voir tous les ateliers
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-dore text-6xl mb-4">🎨</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
+              Aucun atelier disponible
+            </h3>
+            <p className="text-gris-doux">
+              De nouveaux ateliers seront bientôt disponibles
+            </p>
           </div>
-          
-          {/* View all button */}
-          <div className="text-center mt-12">
-            <Button href="/workshops" className="btn-secondary">
-              Voir tous les ateliers
-            </Button>
-          </div>
-        </>
-      ) : (
-        <div className="text-center py-12">
-          <div className="text-dore text-6xl mb-4">🎨</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
-            Aucun atelier disponible
-          </h3>
-          <p className="text-gris-doux">
-            De nouveaux ateliers seront bientôt disponibles
-          </p>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   );
 }
