@@ -48,12 +48,7 @@ export default function EventCard({ workshop }: EventCardProps) {
 
   return (
     <Link href={`/workshops/${workshop.slug}`} className="block">
-      <div className="rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer" style={{
-        backgroundImage: 'url(/body.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}>
+      <div className="card-elegant overflow-hidden hover:card-elevated transition-all duration-300 cursor-pointer">
         {/* Cover Image */}
         <div className="aspect-video overflow-hidden">
           <Image
@@ -66,48 +61,45 @@ export default function EventCard({ workshop }: EventCardProps) {
         </div>
         
         {/* Content */}
-        <div className="p-6 space-y-4 relative">
-          {/* Overlay pour la lisibilité */}
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl"></div>
-          <div className="relative z-10 space-y-4">
+        <div className="p-6 space-y-4">
           {/* Days until event pill */}
           <div className="inline-block">
-            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+            <span className="bg-rose-poudre text-terracotta text-sm font-medium px-4 py-2 rounded-full">
               {getDaysUntilEvent(workshop.date)}
             </span>
           </div>
           
           {/* Title */}
-          <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">
+          <h3 className="text-2xl font-semibold text-gray-900 line-clamp-2 font-serif">
             {workshop.title}
           </h3>
           
           {/* Date and Location */}
-          <div className="space-y-2 text-gray-600">
-            <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="space-y-3 text-gris-doux">
+            <div className="flex items-center space-x-3">
+              <svg className="w-5 h-5 text-terracotta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <span className="text-sm font-medium">
+              <span className="text-base font-medium">
                 {formatDate(workshop.date)}
               </span>
             </div>
             
-            <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center space-x-3">
+              <svg className="w-5 h-5 text-terracotta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span className="text-sm">{workshop.location}</span>
+              <span className="text-base">{workshop.location}</span>
             </div>
           </div>
           
           {/* Price and Seats */}
-          <div className="flex justify-between items-center text-sm text-gray-500">
-            <span className="font-medium text-lg text-gray-900">
+          <div className="flex justify-between items-center text-base text-gris-doux">
+            <span className="font-bold text-2xl text-terracotta">
               {workshop.price}€
             </span>
-            <span className="text-sm text-gray-600">
+            <span className="text-base text-gris-doux">
               {workshop.seats} places restantes
             </span>
           </div>
@@ -137,12 +129,11 @@ export default function EventCard({ workshop }: EventCardProps) {
                     priceId: workshop.priceStripeId!,
                   });
                 }}
-                className="w-full px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200 text-sm font-medium"
+                className="w-full px-6 py-3 rounded-2xl bg-beige text-gris-doux hover:bg-rose-poudre transition-all duration-400 text-base font-medium"
               >
                 Ajouter au panier
               </button>
             )}
-          </div>
           </div>
         </div>
       </div>

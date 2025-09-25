@@ -1,6 +1,5 @@
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/NavBar";
-import Container from "@/components/ui/Container";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -28,20 +27,11 @@ export default function RootLayout({
   return (
     <html lang="fr" className="light">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900`}
-        style={{
-          backgroundImage: 'url(/body.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
-        }}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900 font-sans`}
       >
         <Header />
         <main className="pt-20">
-          <Container>
-            {children}
-          </Container>
+          {children}
         </main>
         <Footer />
       </body>

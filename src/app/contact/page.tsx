@@ -43,7 +43,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="py-20">
+    <div className="py-20 bg-beige-fonce px-6">
       <SectionTitle 
         title="Contactez-nous"
         subtitle="Une question ? Un projet ? N&apos;hésitez pas à nous écrire, nous serons ravis de vous répondre"

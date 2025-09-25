@@ -7,7 +7,7 @@ export default function PhotoMosaic() {
     <section className="py-20">
       <SectionTitle 
         title="Nos moments de partage"
-        subtitle="Découvrez l&apos;ambiance chaleureuse de nos ateliers à travers ces instants capturés"
+        subtitle="Un regard sur la beauté simple des instants vécus ensemble."
       />
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">

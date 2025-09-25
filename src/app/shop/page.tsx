@@ -78,17 +78,17 @@ export default function ShopPage() {
 
   if (isLoadingProducts) {
     return (
-      <div className="py-20">
+      <div className="py-20 px-6">
         <SectionTitle 
           title="Notre boutique"
           subtitle="Découvrez notre sélection de matériel créatif de qualité pour continuer à créer chez vous"
         />
         <div className="text-center py-12">
-          <div className="text-gray-400 text-6xl mb-4">⏳</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="text-dore text-6xl mb-4">⏳</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
             Chargement des produits...
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gris-doux">
             Veuillez patienter pendant que nous récupérons nos produits
           </p>
         </div>
@@ -98,17 +98,17 @@ export default function ShopPage() {
 
   if (products.length === 0) {
     return (
-      <div className="py-20">
+      <div className="py-20 px-6">
         <SectionTitle 
           title="Notre boutique"
           subtitle="Découvrez notre sélection de matériel créatif de qualité pour continuer à créer chez vous"
         />
         <div className="text-center py-12">
-          <div className="text-gray-400 text-6xl mb-4">📦</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="text-dore text-6xl mb-4">📦</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
             Aucun produit disponible
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gris-doux">
             Nos produits seront bientôt disponibles
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="py-20">
+    <div className="py-20 bg-beige-fonce px-6">
       <SectionTitle 
         title="Notre boutique"
         subtitle="Découvrez notre sélection de matériel créatif de qualité pour continuer à créer chez vous"
@@ -125,7 +125,7 @@ export default function ShopPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {products.map((product) => (
-          <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+          <div key={product.id} className="card-elegant overflow-hidden hover:card-elevated transition-all duration-300">
             {/* Product Image */}
             <div className="aspect-square overflow-hidden">
               <Image
@@ -139,24 +139,24 @@ export default function ShopPage() {
             
             {/* Product Info */}
             <div className="p-6 space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900">
+              <h3 className="text-xl font-semibold text-gray-900 font-serif">
                 {product.title}
               </h3>
               
               {product.description && (
-                <p className="text-gray-600 text-sm">
+                <p className="text-gris-doux text-sm">
                   {product.description}
                 </p>
               )}
               
               <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-gray-900">
+                <span className="text-2xl font-bold text-dore">
                   {product.price}€
                 </span>
                 <Button 
                   onClick={() => handlePurchase(product)}
                   disabled={loading === product.id || product.stock <= 0}
-                  className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                  className="btn-primary disabled:opacity-50"
                 >
                   {product.stock <= 0 ? 'Rupture de stock' : 
                    loading === product.id ? 'Redirection...' : 'Acheter maintenant'}
@@ -164,7 +164,7 @@ export default function ShopPage() {
               </div>
               
               {product.stock > 0 && (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gris-doux">
                   {product.stock} en stock
                 </p>
               )}
@@ -175,12 +175,12 @@ export default function ShopPage() {
 
       {/* Information notice */}
       <div className="mt-16 text-center">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 max-w-2xl mx-auto">
-          <div className="text-blue-600 text-4xl mb-4">🛒</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        <div className="bg-rose border border-dore/20 rounded-xl p-8 max-w-2xl mx-auto">
+          <div className="text-dore text-4xl mb-4">🛒</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
             Paiement sécurisé
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gris-doux">
             Tous nos paiements sont sécurisés par Stripe. Vous recevrez un email de confirmation 
             après votre achat.
           </p>

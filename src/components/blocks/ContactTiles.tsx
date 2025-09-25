@@ -41,7 +41,7 @@ export default function ContactTiles() {
     <section className="py-20">
       <SectionTitle 
         title="On se rencontre ?"
-        subtitle="Plusieurs façons de nous contacter et de rester connectés"
+        subtitle="Écrivons ensemble la suite de ton histoire créative."
       />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

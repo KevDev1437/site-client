@@ -48,10 +48,10 @@ export default async function WorkshopsPage() {
 
   if (error) {
     return (
-      <div className="py-20 text-center">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">Erreur de connexion</h1>
-        <p className="text-gray-600">Erreur : {error.message}</p>
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg text-left">
+      <div className="py-20 text-center px-6">
+        <h1 className="text-2xl font-bold text-red-600 mb-4 font-serif">Erreur de connexion</h1>
+        <p className="text-gris-doux">Erreur : {error.message}</p>
+        <div className="mt-4 p-4 bg-rose rounded-lg text-left">
           <pre className="text-sm">{JSON.stringify(error, null, 2)}</pre>
         </div>
       </div>
@@ -60,17 +60,17 @@ export default async function WorkshopsPage() {
 
   if (!workshops || workshops.length === 0) {
     return (
-      <div className="py-20 text-center">
+      <div className="py-20 text-center px-6">
         <SectionTitle 
           title="Tous nos ateliers"
           subtitle="Découvrez l'ensemble de nos ateliers créatifs et trouvez celui qui vous correspond"
         />
         <div className="text-center py-12">
-          <div className="text-gray-400 text-6xl mb-4">🎨</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="text-dore text-6xl mb-4">🎨</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
             Aucun atelier disponible
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gris-doux">
             De nouveaux ateliers seront bientôt disponibles
           </p>
         </div>
@@ -79,15 +79,15 @@ export default async function WorkshopsPage() {
   }
 
   return (
-    <div className="py-20">
-      <SectionTitle 
-        title="Tous nos ateliers"
-        subtitle="Découvrez l'ensemble de nos ateliers créatifs et trouvez celui qui vous correspond"
-      />
+    <div className="py-20 bg-boutique px-6">
+        <SectionTitle 
+          title="Tous nos ateliers"
+          subtitle="Découvrez l'ensemble de nos ateliers créatifs et trouvez celui qui vous correspond"
+        />
 
       {/* Results count */}
       <div className="mb-8">
-        <p className="text-gray-600">
+        <p className="text-gris-doux">
           {workshops.length} atelier{workshops.length > 1 ? 's' : ''} disponible{workshops.length > 1 ? 's' : ''}
         </p>
       </div>

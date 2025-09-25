@@ -32,7 +32,7 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'shadow-lg backdrop-blur-md' : 'backdrop-blur-sm'
+      isScrolled ? 'shadow-lg backdrop-blur-md bg-blanc-creme/95' : 'backdrop-blur-sm bg-beige/80'
     }`}>
 <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
@@ -57,7 +57,7 @@ export default function Header() {
           {/* Actions droite */}
           <div className="flex items-center gap-4">
             {/* Se connecter avec icône */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 text-black hover:text-gray-800 font-bold text-base transition-colors duration-200">
+            <button className="hidden md:flex items-center gap-2 px-4 py-2 text-gris-doux hover:text-dore font-medium text-base transition-colors duration-300">
               <User className="w-5 h-5" />
               <span>Se connecter</span>
             </button>
@@ -65,11 +65,11 @@ export default function Header() {
             {/* Panier avec compteur */}
             <Link 
               href="/cart" 
-              className="relative p-2 text-black hover:text-gray-800 transition-colors duration-200"
+              className="relative p-2 text-gris-doux hover:text-dore transition-colors duration-300"
             >
               <ShoppingCart className="w-6 h-6" />
               {totalQty > 0 && (
-                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full bg-gray-800 text-white text-xs font-bold px-2 py-0.5 min-w-[20px] h-[20px]">
+                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full bg-dore text-white text-xs font-medium px-2 py-0.5 min-w-[20px] h-[20px]">
                   {totalQty}
                 </span>
               )}
@@ -77,7 +77,7 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden p-2 text-black hover:text-gray-800 transition-colors duration-200"
+              className="lg:hidden p-2 text-gris-doux hover:text-dore transition-colors duration-300"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Menu"
             >
@@ -87,16 +87,16 @@ export default function Header() {
         </div>
 
         {/* Ligne du bas - Navigation centrée */}
-        <div className="hidden lg:flex items-center justify-center py-4 border-t border-black/30">
+        <div className="hidden lg:flex items-center justify-center py-4 border-t border-dore/20">
           <div className="flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-black hover:text-gray-800 font-bold text-base transition-colors duration-200 relative group"
+                className="text-gris-doux hover:text-dore font-medium text-base transition-colors duration-300 relative group font-sans"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-200 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-dore transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
           </div>
