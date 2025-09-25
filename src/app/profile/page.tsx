@@ -251,10 +251,10 @@ export default function ProfilePage() {
                 <div>
                   <p className="text-sm text-gray-500 font-sans">Membre depuis</p>
                   <p className="text-gray-900 font-sans">
-                    {new Date(user.created_at).toLocaleDateString('fr-FR', {
+                    {user.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR', {
                       year: 'numeric',
                       month: 'long'
-                    })}
+                    }) : 'Non disponible'}
                   </p>
                 </div>
                 
