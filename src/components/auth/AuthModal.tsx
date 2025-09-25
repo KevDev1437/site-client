@@ -141,7 +141,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            S'inscrire
+            S&apos;inscrire
           </button>
         </div>
 
