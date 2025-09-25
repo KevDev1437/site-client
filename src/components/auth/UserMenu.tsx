@@ -17,6 +17,13 @@ export default function UserMenu({ onLogin }: UserMenuProps) {
 
   const handleLogout = async () => {
     console.log('🔄 Tentative de déconnexion...');
+    
+    if (!supabase) {
+      console.error('❌ Supabase client non initialisé');
+      alert('Erreur: Client Supabase non initialisé');
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
