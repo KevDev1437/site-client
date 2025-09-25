@@ -24,6 +24,12 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const getUser = async () => {
+      if (!supabase) {
+        console.error('Supabase client non initialisé');
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data: { session } } = await supabase.auth.getSession();
         
@@ -56,21 +62,28 @@ export default function ProfilePage() {
     getUser();
 
     // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event) => {
-        if (event === 'SIGNED_OUT') {
-          setIsLoggedOut(true);
-          setTimeout(() => {
-            router.push('/');
-          }, 2000);
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event) => {
+          if (event === 'SIGNED_OUT') {
+            setIsLoggedOut(true);
+            setTimeout(() => {
+              router.push('/');
+            }, 2000);
+          }
         }
-      }
-    );
+      );
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    }
   }, [router]);
 
   const handleLogout = async () => {
+    if (!supabase) {
+      console.error('Supabase client non initialisé');
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
