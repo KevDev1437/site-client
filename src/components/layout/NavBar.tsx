@@ -3,7 +3,7 @@
 import { useAuthModal } from '@/components/auth/AuthProvider';
 import UserMenu from '@/components/auth/UserMenu';
 import { useCart } from '@/store/cart';
-import { Menu, ShoppingCart, User, X } from 'lucide-react';
+import { Menu, ShoppingCart, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -163,16 +163,8 @@ export default function Header() {
                     )}
                   </Link>
                   
-                  <button 
-                    onClick={() => {
-                      openAuthModal();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
-                  >
-                    <User className="w-5 h-5" />
-                    <span>Se connecter</span>
-                  </button>
+                  {/* Menu utilisateur mobile */}
+                  <UserMenu onLogin={openAuthModal} />
                 </div>
               </div>
             </div>
