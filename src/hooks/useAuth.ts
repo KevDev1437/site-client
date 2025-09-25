@@ -8,11 +8,23 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Vérifier que supabase est initialisé
+    if (!supabase) {
+      console.error('❌ Supabase client non initialisé');
+      setLoading(false);
+      return;
+    }
+
     // Récupérer la session actuelle
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
-      setLoading(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user || null);
+        setLoading(false);
+      } catch (error) {
+        console.error('❌ Erreur lors de la récupération de la session:', error);
+        setLoading(false);
+      }
     };
 
     getSession();
