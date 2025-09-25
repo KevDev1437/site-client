@@ -14,6 +14,14 @@ export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProp
   const [isOpen, setIsOpen] = useState(false);
   const { user, loading } = useAuth();
 
+  // Debug pour voir l'état d'authentification
+  console.log('🔍 UserMenu Debug:', { 
+    user: user?.email || 'No user', 
+    loading, 
+    isMobileMenu,
+    timestamp: new Date().toISOString()
+  });
+
   // Utiliser l'instance exportée de supabase
 
   const handleLogout = async () => {
@@ -76,6 +84,7 @@ export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProp
           className="lg:hidden flex items-center gap-2 px-2 py-2 text-gris-doux hover:text-dore transition-colors duration-300"
         >
           <User className="w-5 h-5" />
+          <span className="text-sm">Se connecter</span>
         </button>
       </>
     );
@@ -177,26 +186,38 @@ export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProp
       {/* Mobile - Version pour le menu mobile */}
       {isMobileMenu && (
         <div className="lg:hidden space-y-3">
-          <div className="px-4 py-3 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium text-gray-900">{user.email}</p>
-            <p className="text-xs text-gray-500">Connecté</p>
-          </div>
-          
-          <a 
-            href="/profile"
-            className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
-          >
-            <Settings className="w-5 h-5" />
-            <span>Profil</span>
-          </a>
-          
-          <button 
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
-          >
-            <LogOut className="w-5 h-5" />
-            <span>Se déconnecter</span>
-          </button>
+          {user ? (
+            <>
+              <div className="px-4 py-3 bg-gray-50 rounded-lg">
+                <p className="text-sm font-medium text-gray-900">{user.email}</p>
+                <p className="text-xs text-gray-500">Connecté</p>
+              </div>
+              
+              <a 
+                href="/profile"
+                className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+              >
+                <Settings className="w-5 h-5" />
+                <span>Profil</span>
+              </a>
+              
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Se déconnecter</span>
+              </button>
+            </>
+          ) : (
+            <button 
+              onClick={onLogin}
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-800 hover:text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors duration-200"
+            >
+              <User className="w-5 h-5" />
+              <span>Se connecter</span>
+            </button>
+          )}
         </div>
       )}
     </>

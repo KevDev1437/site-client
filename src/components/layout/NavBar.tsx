@@ -64,6 +64,11 @@ export default function Header() {
               <UserMenu onLogin={openAuthModal} />
             </div>
             
+            {/* Bouton connexion mobile - Header */}
+            <div className="lg:hidden">
+              <UserMenu onLogin={openAuthModal} />
+            </div>
+            
             {/* Panier avec compteur */}
             <Link 
               href="/cart" 
