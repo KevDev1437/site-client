@@ -18,7 +18,7 @@ export function useAuth() {
     // Récupérer la session actuelle
     const getSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabase?.auth.getSession() || { data: { session: null } };
         setUser(session?.user || null);
         setLoading(false);
       } catch (error) {
