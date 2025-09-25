@@ -2,12 +2,11 @@
 
 import { createClient } from '@/lib/supabase';
 import { CheckCircle, Mail } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function AuthCallback() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
 
@@ -36,7 +35,7 @@ export default function AuthCallback() {
           setStatus('error');
           setMessage('Session non trouvée');
         }
-      } catch (error) {
+      } catch {
         setStatus('error');
         setMessage('Une erreur est survenue');
       }
@@ -69,7 +68,7 @@ export default function AuthCallback() {
               Email confirmé ! 🎉
             </h1>
             <p className="text-gray-600 mb-6">
-              Votre compte a été confirmé avec succès. Vous allez être redirigé vers la page d'accueil.
+              Votre compte a été confirmé avec succès. Vous allez être redirigé vers la page d&apos;accueil.
             </p>
             <div className="bg-terracotta/10 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-center gap-2 text-terracotta">
@@ -101,7 +100,7 @@ export default function AuthCallback() {
               onClick={() => router.push('/')}
               className="w-full bg-terracotta hover:bg-rose-poudre text-white font-medium py-3 px-4 rounded-lg transition-colors"
             >
-              Retour à l'accueil
+              Retour à l&apos;accueil
             </button>
           </>
         )}

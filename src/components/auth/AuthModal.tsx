@@ -42,7 +42,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           setMessage(null);
         }, 1500);
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Une erreur est survenue' });
     } finally {
       setLoading(false);
@@ -77,7 +77,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setPassword('');
         setConfirmPassword('');
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Une erreur est survenue' });
     } finally {
       setLoading(false);
@@ -283,7 +283,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 disabled={loading}
                 className="w-full bg-terracotta hover:bg-rose-poudre text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Inscription...' : 'S\'inscrire'}
+                {loading ? 'Inscription...' : 'S&apos;inscrire'}
               </button>
             </form>
           )}
