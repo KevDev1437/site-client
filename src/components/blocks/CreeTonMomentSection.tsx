@@ -44,10 +44,10 @@ export default function CreeTonMomentSection() {
       {/* Overlay pour améliorer la lisibilité du texte */}
       <div className="absolute inset-0 bg-black/20"></div>
       
-      <div className="relative z-10 text-center">
-        <h2 className="font-serif text-4xl font-medium text-white text-center tracking-wide drop-shadow-lg">
-          Crée ton moment 🕯
-        </h2>
+        <div className="relative z-10 text-center">
+          <h2 className="font-serif text-4xl font-medium text-white text-center tracking-wide drop-shadow-lg">
+            Crée ton moment <span className="flame-gentle">🕯</span>
+          </h2>
         <p className="font-sans text-base text-white mt-2 max-w-2xl mx-auto drop-shadow-md">
           Accorde-toi une pause, respire, et laisse émerger ton univers intérieur
         </p>

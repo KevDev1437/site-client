@@ -304,3 +304,53 @@ body {
   background: var(--blanc-casse);
 }
 
+/* Animation de flamme */
+.flame-animation {
+  animation: flame 2s ease-in-out infinite alternate;
+  display: inline-block;
+}
+
+@keyframes flame {
+  0% {
+    transform: rotate(-2deg) scale(1);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: rotate(1deg) scale(1.05);
+    filter: hue-rotate(5deg);
+  }
+  50% {
+    transform: rotate(-1deg) scale(1.1);
+    filter: hue-rotate(10deg);
+  }
+  75% {
+    transform: rotate(2deg) scale(1.05);
+    filter: hue-rotate(5deg);
+  }
+  100% {
+    transform: rotate(-1deg) scale(1);
+    filter: hue-rotate(0deg);
+  }
+}
+
+/* Animation de flamme plus subtile */
+.flame-gentle {
+  animation: flame-gentle 3s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes flame-gentle {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(1deg) scale(1.02);
+  }
+  50% {
+    transform: rotate(-0.5deg) scale(1.03);
+  }
+  75% {
+    transform: rotate(0.5deg) scale(1.01);
+  }
+}
+
