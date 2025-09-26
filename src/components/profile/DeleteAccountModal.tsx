@@ -1,8 +1,7 @@
 'use client';
 
-import { supabase } from '@/lib/supabase';
-import { AlertTriangle, Trash2, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase';
+import { AlertTriangle, Eye, EyeOff, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface DeleteAccountModalProps {
@@ -12,226 +11,191 @@ interface DeleteAccountModalProps {
 }
 
 export default function DeleteAccountModal({ isOpen, onClose, userEmail }: DeleteAccountModalProps) {
-  const [confirmText, setConfirmText] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmation, setConfirmation] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const router = useRouter();
-
-  const expectedText = 'SUPPRIMER MON COMPTE';
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (confirmation !== 'SUPPRIMER MON COMPTE') {
+      setError('Vous devez taper exactement "SUPPRIMER MON COMPTE"');
+      return;
+    }
+
+    if (!password) {
+      setError('Veuillez entrer votre mot de passe');
+      return;
+    }
+
     setLoading(true);
-    setMessage(null);
-
-    if (confirmText !== expectedText) {
-      setMessage({ type: 'error', text: 'Veuillez taper exactement "SUPPRIMER MON COMPTE"' });
-      setLoading(false);
-      return;
-    }
-
-    if (!password.trim()) {
-      setMessage({ type: 'error', text: 'Veuillez saisir votre mot de passe' });
-      setLoading(false);
-      return;
-    }
+    setError('');
 
     try {
-      if (!supabase) {
-        throw new Error('Supabase client non initialisé');
-      }
-
-      // 1. Vérifier le mot de passe en se reconnectant
+      const supabase = createClient();
+      
+      // Vérifier le mot de passe en se reconnectant
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: userEmail,
         password: password
       });
 
       if (signInError) {
-        throw new Error('Mot de passe incorrect');
+        setError('Mot de passe incorrect');
+        setLoading(false);
+        return;
       }
 
-      // 2. Supprimer manuellement les données liées
-      const currentUserId = (await supabase.auth.getUser()).data.user?.id;
-      
-      if (!currentUserId) {
-        throw new Error('Utilisateur non trouvé');
+      // Supprimer le compte via l'API route
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.access_token) {
+        setError('Session invalide');
+        setLoading(false);
+        return;
       }
 
-      // Supprimer les données dans l'ordre
-      await supabase.from('workshop_bookings').delete().eq('user_id', currentUserId);
-      await supabase.from('user_purchases').delete().eq('user_id', currentUserId);
-      await supabase.from('profiles').delete().eq('id', currentUserId);
-      
-      // Supprimer l'avatar du storage si existe
-      try {
-        const { data: files } = await supabase.storage.from('avatars').list('', {
-          search: currentUserId
-        });
-        
-        if (files && files.length > 0) {
-          const filePaths = files.map(file => `${currentUserId}/${file.name}`);
-          await supabase.storage.from('avatars').remove(filePaths);
+      const response = await fetch('/api/user/delete-account', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.session.access_token}`,
+          'Content-Type': 'application/json'
         }
-      } catch (storageError) {
-        console.warn('Erreur suppression avatar:', storageError);
-      }
+      });
 
-      // 3. Déconnexion finale
-      await supabase.auth.signOut();
+      const result = await response.json();
 
-      setMessage({ type: 'success', text: 'Compte supprimé avec succès. Redirection...' });
-      
-      // Rediriger immédiatement vers la page d'accueil
-      setTimeout(() => {
-        // Forcer la redirection et le rechargement
+      if (!response.ok) {
+        setError(result.error || 'Erreur lors de la suppression du compte');
+        setLoading(false);
+      } else {
+        alert('Compte supprimé avec succès');
+        // Se déconnecter et rediriger
+        await supabase.auth.signOut();
         window.location.href = '/';
-      }, 1500);
-
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Une erreur est survenue lors de la suppression' });
-    } finally {
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      setError('Erreur lors de la suppression du compte');
       setLoading(false);
     }
   };
 
-  const resetForm = () => {
-    setConfirmText('');
-    setPassword('');
-    setMessage(null);
-  };
-
   const handleClose = () => {
-    resetForm();
+    setPassword('');
+    setConfirmation('');
+    setError('');
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Overlay */}
-      <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={handleClose}
-      />
-      
-      {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-2xl font-serif font-bold text-red-600">
-            Supprimer mon compte
-          </h2>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+            </div>
+            <h2 className="text-xl font-bold text-[#8a5c3b] font-serif">
+              Supprimer mon compte
+            </h2>
+          </div>
           <button
             onClick={handleClose}
-            className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
-          {message && (
-            <div className={`mb-6 p-4 rounded-lg text-sm ${
-              message.type === 'success' 
-                ? 'bg-green-50 text-green-700 border border-green-200' 
-                : 'bg-red-50 text-red-700 border border-red-200'
-            }`}>
-              {message.text}
+        {/* Warning */}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-red-800 font-sans text-sm mb-1">
+                Attention ! Cette action est irréversible
+              </h3>
+              <p className="text-red-700 font-sans text-xs">
+                Toutes vos données, réservations et achats seront définitivement supprimés.
+              </p>
             </div>
-          )}
+          </div>
+        </div>
 
-          {/* Avertissement */}
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-red-800 mb-2">Attention !</h3>
-                <p className="text-red-700 text-sm">
-                  Cette action est <strong>irréversible</strong>. Toutes vos données seront définitivement supprimées :
-                </p>
-                <ul className="text-red-700 text-sm mt-2 ml-4 list-disc">
-                  <li>Votre profil et informations personnelles</li>
-                  <li>Vos achats et historique</li>
-                  <li>Vos réservations d&apos;ateliers</li>
-                  <li>Votre compte de connexion</li>
-                </ul>
-              </div>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 font-sans mb-2">
+              Mot de passe
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8a5c3b] focus:border-transparent font-sans"
+                placeholder="Entrez votre mot de passe"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Champ mot de passe */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mot de passe actuel
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
-                placeholder="Saisissez votre mot de passe"
-                required
-              />
-            </div>
+          {/* Confirmation */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 font-sans mb-2">
+              Confirmation
+            </label>
+            <input
+              type="text"
+              value={confirmation}
+              onChange={(e) => setConfirmation(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8a5c3b] focus:border-transparent font-sans"
+              placeholder="Tapez: SUPPRIMER MON COMPTE"
+              required
+            />
+            <p className="text-xs text-gray-500 font-sans mt-1">
+              Tapez exactement : <span className="font-mono bg-gray-100 px-1 rounded">SUPPRIMER MON COMPTE</span>
+            </p>
+          </div>
 
-            {/* Confirmation texte */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pour confirmer la suppression, tapez exactement :
-              </label>
-              <p className="text-sm text-gray-600 mb-3 font-mono bg-gray-100 p-2 rounded">
-                SUPPRIMER MON COMPTE
-              </p>
-              <input
-                type="text"
-                value={confirmText}
-                onChange={(e) => setConfirmText(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
-                placeholder="Tapez le texte ci-dessus"
-                required
-              />
+          {/* Error */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-red-700 font-sans text-sm">{error}</p>
             </div>
+          )}
 
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600">
-                <strong>Email du compte :</strong> {userEmail}
-              </p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-4 pt-6 border-t border-gray-100">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                disabled={loading || confirmText !== expectedText || !password.trim()}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Suppression...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-4 h-4" />
-                    Supprimer définitivement
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
+          {/* Actions */}
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg px-4 py-2 font-sans transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={loading || !password || confirmation !== 'SUPPRIMER MON COMPTE'}
+              className="flex-1 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white rounded-lg px-4 py-2 font-sans transition-colors disabled:cursor-not-allowed"
+            >
+              {loading ? 'Suppression...' : 'Supprimer définitivement'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

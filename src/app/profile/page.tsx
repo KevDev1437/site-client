@@ -1,593 +1,425 @@
 'use client';
 
-import ChangePasswordModal from '@/components/profile/ChangePasswordModal';
 import DeleteAccountModal from '@/components/profile/DeleteAccountModal';
-import ProfileEditModal from '@/components/profile/ProfileEditModal';
-import Button from '@/components/ui/Button';
-import { supabase } from '@/lib/supabase';
-import { Calendar, Edit, Heart, Key, LogOut, Mail, Phone, ShoppingBag, Trash2, User } from 'lucide-react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
+import { createClient } from '@/lib/supabase';
+import { Edit, LogOut, Palette, ShoppingBag, Trash2, User } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-interface Profile {
+interface UserProfile {
   id: string;
-  full_name: string | null;
-  bio: string | null;
-  avatar_url: string | null;
-  phone: string | null;
+  email: string;
+  full_name?: string;
+  phone?: string;
+  avatar_url?: string;
+}
+
+interface Reservation {
+  id: string;
+  status: string;
   created_at: string;
+  workshop: {
+    id: string;
+    title: string;
+    date: string;
+    location: string;
+    cover_url: string;
+    price: number;
+  };
 }
 
-interface Purchase {
+interface Order {
   id: string;
-  product_name: string;
-  product_price: number;
-  quantity: number;
-  purchase_date: string;
+  amount: number;
+  currency: string;
   status: string;
-}
-
-interface WorkshopBooking {
-  id: string;
-  workshop_name: string;
-  workshop_date: string;
-  booking_date: string;
-  status: string;
-  price: number;
+  created_at: string;
+  workshop?: {
+    id: string;
+    title: string;
+    cover_url: string;
+  };
+  product?: {
+    id: string;
+    title: string;
+    image_url: string;
+    price: number;
+  };
 }
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<{ email?: string; created_at?: string; email_confirmed_at?: string } | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [bookings, setBookings] = useState<WorkshopBooking[]>([]);
+  const { user } = useAuth();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
-    const getUser = async () => {
-      if (!supabase) {
-        console.error('Supabase client non initialisé');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session?.user) {
-          setLoading(false);
-          return;
-        }
-
-        setUser(session.user);
-
-        // Récupérer le profil depuis la table profiles
-        console.log('🔍 Récupération du profil pour user:', session.user.id);
-        const { data: profileData, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        console.log('🔍 Résultat profil:', { profileData, error });
-
-        if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-          console.error('❌ Erreur lors de la récupération du profil:', error);
-          
-          // Si la table n'existe pas ou si l'utilisateur n'a pas de profil, en créer un
-          if (error.code === 'PGRST116' || error.message.includes('relation "profiles" does not exist')) {
-            console.log('🔄 Création d\'un profil par défaut...');
-            const { data: newProfile, error: createError } = await supabase
-              .from('profiles')
-              .insert({
-                id: session.user.id,
-                full_name: null,
-                bio: null,
-                avatar_url: null,
-                phone: null
-              })
-              .select()
-              .single();
-
-            if (createError) {
-              console.error('❌ Erreur création profil:', createError);
-              // Créer un profil par défaut côté client
-              setProfile({
-                id: session.user.id,
-                full_name: null,
-                bio: null,
-                avatar_url: null,
-                phone: null,
-                created_at: new Date().toISOString()
-              });
-            } else {
-              console.log('✅ Profil créé:', newProfile);
-              setProfile(newProfile);
-            }
-          }
-        } else {
-          console.log('✅ Profil trouvé:', profileData);
-          setProfile(profileData);
-        }
-
-        // Vérifier le stockage local pour les modifications temporaires
-        const localProfile = localStorage.getItem('temp_profile');
-        if (localProfile) {
-          try {
-            const parsedProfile = JSON.parse(localProfile);
-            console.log('🔄 Profil local trouvé au chargement:', parsedProfile);
-            setProfile(parsedProfile);
-          } catch (e) {
-            console.warn('⚠️ Erreur parsing profil local:', e);
-          }
-        }
-
-        // Récupérer les achats
-        const { data: purchasesData, error: purchasesError } = await supabase
-          .from('user_purchases')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .order('purchase_date', { ascending: false });
-
-        if (purchasesError) {
-          console.error('Erreur lors de la récupération des achats:', purchasesError);
-        } else {
-          setPurchases(purchasesData || []);
-        }
-
-        // Récupérer les réservations d'ateliers
-        const { data: bookingsData, error: bookingsError } = await supabase
-          .from('workshop_bookings')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .order('workshop_date', { ascending: false });
-
-        if (bookingsError) {
-          console.error('Erreur lors de la récupération des réservations:', bookingsError);
-        } else {
-          setBookings(bookingsData || []);
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUser();
-
-    // Écouter les changements d'authentification
-    if (supabase) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        (event) => {
-          if (event === 'SIGNED_OUT') {
-            setIsLoggedOut(true);
-            setTimeout(() => {
-              router.push('/');
-            }, 2000);
-          }
-        }
-      );
-
-      return () => subscription.unsubscribe();
+    if (user && loading) {
+      fetchUserData();
     }
-  }, [router]);
+  }, [user?.id]); // Seulement quand l'ID utilisateur change
 
-  const handleLogout = async () => {
-    if (!supabase) {
-      console.error('Supabase client non initialisé');
-      return;
-    }
-
+  const fetchUserData = async () => {
+    if (!user) return;
+    
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Erreur lors de la déconnexion:', error);
-      } else {
-        setIsLoggedOut(true);
-        setTimeout(() => {
-          router.push('/');
-        }, 2000);
-      }
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-    }
-  };
-
-  const handleProfileUpdate = async () => {
-    // Vérifier d'abord le stockage local
-    const localProfile = localStorage.getItem('temp_profile');
-    if (localProfile) {
-      try {
-        const parsedProfile = JSON.parse(localProfile);
-        console.log('🔄 Profil local trouvé:', parsedProfile);
-        setProfile(parsedProfile);
-        return;
-      } catch (e) {
-        console.warn('⚠️ Erreur parsing profil local:', e);
-      }
-    }
-
-    // Recharger les données du profil depuis Supabase
-    if (!supabase) {
-      console.error('Supabase client non initialisé');
-      return;
-    }
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const supabase = createClient();
       
-      if (!session?.user) {
-        return;
-      }
-
-      setUser(session.user);
-
-      // Récupérer le profil depuis la table profiles
-      const { data: profileData, error } = await supabase
+      console.log('🔍 Récupération des données pour l\'utilisateur:', user.id);
+      
+      // Récupérer le profil utilisateur
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single();
+      
+      if (profileError) {
+        console.log('⚠️ Pas de profil trouvé, utilisation des métadonnées utilisateur');
+      }
+      
+      setUserProfile(profile || {
+        id: user.id,
+        email: user.email || '',
+        full_name: user.user_metadata?.full_name || user.user_metadata?.name,
+        phone: user.user_metadata?.phone,
+        avatar_url: user.user_metadata?.avatar_url
+      });
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Erreur lors de la récupération du profil:', error);
+      // Récupérer les réservations (requête simplifiée)
+      console.log('🔍 Recherche des réservations...');
+      const { data: reservationsData, error: reservationsError } = await supabase
+        .from('reservations')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (reservationsError) {
+        console.error('❌ Erreur réservations:', reservationsError.message);
+        setReservations([]);
       } else {
-        setProfile(profileData);
+        console.log('✅ Réservations trouvées:', reservationsData?.length || 0);
+        setReservations(reservationsData || []);
+      }
+
+      // Récupérer les commandes (requête simplifiée)
+      console.log('🔍 Recherche des commandes...');
+      const { data: ordersData, error: ordersError } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (ordersError) {
+        console.error('❌ Erreur commandes:', ordersError.message);
+        setOrders([]);
+      } else {
+        console.log('✅ Commandes trouvées:', ordersData?.length || 0);
+        setOrders(ordersData || []);
       }
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du profil:', error);
+      console.error('❌ Erreur lors du chargement des données:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-beige-clair flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-terracotta mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement de votre profil...</p>
-        </div>
-      </div>
-    );
-  }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatAmount = (amount: number, currency: string) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: currency.toUpperCase()
+    }).format(amount / 100);
+  };
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+  };
+
+  const handleDeleteAccount = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleEditProfile = () => {
+    // Rediriger vers une page d'édition ou ouvrir un modal
+    alert('Fonctionnalité d\'édition à implémenter');
+  };
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-beige-clair flex items-center justify-center px-6">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-          <div className="bg-rose-poudre/20 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-            <User className="w-10 h-10 text-terracotta" />
-          </div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900 mb-4">
-            Accès restreint
+      <div className="min-h-screen bg-[#f8ecdd] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔐</div>
+          <h1 className="text-2xl font-bold text-[#8a5c3b] mb-2 font-serif">
+            Connexion requise
           </h1>
-          <p className="text-gray-600 mb-6">
-            Veuillez vous connecter pour accéder à votre profil.
+          <p className="text-gray-600 font-sans mb-4">
+            Vous devez être connecté pour accéder à votre profil
           </p>
-          <Button 
-            href="/" 
-            className="bg-terracotta hover:bg-rose-poudre text-white rounded-full px-6 py-2"
+          <Link 
+            href="/auth/login"
+            className="bg-[#8a5c3b] hover:bg-[#a67c52] text-white rounded-lg px-4 py-2 font-sans transition-colors"
           >
-            Retour à l&apos;accueil
-          </Button>
+            Se connecter
+          </Link>
         </div>
       </div>
     );
   }
 
-  if (isLoggedOut) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-beige-clair flex items-center justify-center px-6">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-          <div className="bg-green-100 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-            <LogOut className="w-10 h-10 text-green-600" />
-          </div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900 mb-4">
-            Déconnexion réussie
-          </h1>
-          <p className="text-gray-600">
-            Vous allez être redirigé vers la page d&apos;accueil...
-          </p>
+      <div className="min-h-screen bg-[#f8ecdd] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8a5c3b] mx-auto mb-4"></div>
+          <p className="text-gray-600 font-sans">Chargement de votre profil...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-beige-clair py-12 px-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-[#f8ecdd] py-8">
+      <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-serif font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-[#8a5c3b] mb-2 font-serif">
             Mon Profil
           </h1>
-          <p className="text-gray-600">
-            Gérez vos informations et vos réservations
+          <p className="text-gray-600 font-sans">
+            Gérez vos informations et consultez votre historique
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profil Principal */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                {/* Avatar */}
-                <div className="flex-shrink-0">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-                    {profile?.avatar_url ? (
-                      <Image
-                        src={profile.avatar_url}
-                        alt="Avatar"
-                        width={96}
-                        height={96}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <User className="w-12 h-12 text-gray-400" />
-                    )}
-                  </div>
-                </div>
-
-                {/* Informations */}
-                <div className="flex-1">
-                  <h2 className="text-2xl font-serif font-bold text-gray-900 mb-2">
-                    {profile?.full_name || 'Nom non renseigné'}
-                  </h2>
-                  <div className="flex items-center gap-2 text-gray-600 mb-2">
-                    <Mail className="w-4 h-4" />
-                    <span className="font-sans">{user.email}</span>
-                  </div>
-                  {profile?.phone && (
-                    <div className="flex items-center gap-2 text-gray-600 mb-2">
-                      <Phone className="w-4 h-4" />
-                      <span className="font-sans">{profile.phone}</span>
-                    </div>
-                  )}
-                  {profile?.bio && (
-                    <p className="text-gray-600 font-sans leading-relaxed">
-                      {profile.bio}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="mt-8 pt-6 border-t border-gray-100">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <button
-                    onClick={() => {
-                      console.log('🔍 Clic sur Modifier le profil', { showEditModal, profile });
-                      setShowEditModal(true);
-                    }}
-                    className="bg-terracotta hover:bg-rose-poudre text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
-                  >
-                    <Edit className="w-4 h-4" />
-                    Modifier le profil
-                  </button>
-                  
-                  <button
-                    onClick={() => setShowPasswordModal(true)}
-                    className="bg-gray-600 hover:bg-gray-700 text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
-                  >
-                    <Key className="w-4 h-4" />
-                    Changer le mot de passe
-                  </button>
-                  
-                  <button
-                    onClick={() => setShowDeleteModal(true)}
-                    className="bg-red-600 hover:bg-red-700 text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Supprimer le compte
-                  </button>
-                  
-                  <button
-                    onClick={handleLogout}
-                    className="bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Se déconnecter
-                  </button>
-                </div>
-              </div>
+        {/* Informations utilisateur */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+          <div className="flex items-center gap-6 mb-6">
+            <div className="w-20 h-20 bg-[#8a5c3b] rounded-full flex items-center justify-center">
+              <User className="w-10 h-10 text-white" />
             </div>
-
-            {/* Mes Ateliers Réservés */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <Calendar className="w-6 h-6 text-terracotta" />
-                <h3 className="text-xl font-serif font-semibold text-gray-900">
-                  Mes Ateliers Réservés ({bookings.length})
-                </h3>
-              </div>
-              
-              {bookings.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <Heart className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <p className="text-gray-500 font-sans">
-                    Aucun atelier réservé pour le moment
-                  </p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Découvrez nos ateliers créatifs
-                  </p>
-                  <Button 
-                    href="/workshops" 
-                    className="mt-4 bg-terracotta hover:bg-rose-poudre text-white rounded-full px-6 py-2"
-                  >
-                    Voir les ateliers
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {bookings.map((booking) => (
-                    <div key={booking.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-semibold text-gray-900">{booking.workshop_name}</h4>
-                          <p className="text-sm text-gray-600">
-                            {new Date(booking.workshop_date).toLocaleDateString('fr-FR', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Réservé le {new Date(booking.booking_date).toLocaleDateString('fr-FR')}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-terracotta">{booking.price}€</p>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                            booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {booking.status === 'confirmed' ? 'Confirmé' :
-                             booking.status === 'pending' ? 'En attente' :
-                             booking.status === 'cancelled' ? 'Annulé' :
-                             booking.status}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold text-[#8a5c3b] font-serif">
+                {userProfile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || 'Utilisateur'}
+              </h2>
+              <p className="text-gray-600 font-sans">{userProfile?.email || user.email}</p>
+              {(userProfile?.phone || user.user_metadata?.phone) && (
+                <p className="text-gray-500 font-sans text-sm">
+                  📞 {userProfile?.phone || user.user_metadata?.phone}
+                </p>
               )}
-            </div>
-
-            {/* Mes Achats */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <ShoppingBag className="w-6 h-6 text-terracotta" />
-                <h3 className="text-xl font-serif font-semibold text-gray-900">
-                  Mes Achats ({purchases.length})
-                </h3>
-              </div>
-              
-              {purchases.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <ShoppingBag className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <p className="text-gray-500 font-sans">
-                    Aucun achat pour le moment
-                  </p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Découvrez notre boutique
-                  </p>
-                  <Button 
-                    href="/shop" 
-                    className="mt-4 bg-terracotta hover:bg-rose-poudre text-white rounded-full px-6 py-2"
-                  >
-                    Voir la boutique
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {purchases.map((purchase) => (
-                    <div key={purchase.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-semibold text-gray-900">{purchase.product_name}</h4>
-                          <p className="text-sm text-gray-600">
-                            Quantité: {purchase.quantity}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Acheté le {new Date(purchase.purchase_date).toLocaleDateString('fr-FR')}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-terracotta">
-                            {(purchase.product_price * purchase.quantity).toFixed(2)}€
-                          </p>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            purchase.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            purchase.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            purchase.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {purchase.status === 'completed' ? 'Terminé' :
-                             purchase.status === 'pending' ? 'En attente' :
-                             purchase.status === 'cancelled' ? 'Annulé' :
-                             purchase.status}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <p className="text-gray-500 font-sans text-sm mt-1">
+                ID: {user.id}
+              </p>
             </div>
           </div>
+          
+          {/* Informations détaillées */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-700 font-sans text-sm mb-2">Informations du compte</h3>
+              <p className="text-xs text-gray-600 font-sans">Email vérifié: {user.email_confirmed_at ? '✅ Oui' : '❌ Non'}</p>
+              <p className="text-xs text-gray-600 font-sans">Dernière connexion: {user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString('fr-FR') : 'Inconnue'}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-700 font-sans text-sm mb-2">Statistiques</h3>
+              <p className="text-xs text-gray-600 font-sans">Réservations: {reservations.length}</p>
+              <p className="text-xs text-gray-600 font-sans">Achats: {orders.length}</p>
+            </div>
+          </div>
+          
+          {/* Actions utilisateur */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button 
+              onClick={handleEditProfile}
+              className="flex items-center justify-center gap-2 bg-[#8a5c3b] hover:bg-[#a67c52] text-white rounded-lg px-4 py-3 font-sans transition-colors"
+            >
+              <Edit className="w-4 h-4" />
+              Modifier mon compte
+            </button>
+            <button 
+              onClick={handleDeleteAccount}
+              className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-3 font-sans transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              Supprimer mon compte
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-4 py-3 font-sans transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Se déconnecter
+            </button>
+          </div>
+        </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-lg font-serif font-semibold text-gray-900 mb-4">
-                Informations du compte
-              </h3>
-              
+        {/* Réservations et Achats */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Mes Réservations */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#8a5c3b] rounded-full flex items-center justify-center">
+                <Palette className="w-5 h-5 text-white" />
+              </div>
+              <h2 className="text-xl font-bold text-[#8a5c3b] font-serif">
+                Mes Réservations
+              </h2>
+            </div>
+            
+            {reservations.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🎨</div>
+                <h3 className="text-lg font-semibold text-gray-700 font-serif mb-2">
+                  Aucune réservation pour le moment
+                </h3>
+                <p className="text-gray-500 font-sans mb-6">
+                  Découvrez nos ateliers créatifs et réservez votre place
+                </p>
+                <Link 
+                  href="/workshops"
+                  className="inline-block bg-[#8a5c3b] hover:bg-[#a67c52] text-white rounded-lg px-6 py-3 font-sans transition-colors"
+                >
+                  Découvrir les ateliers
+                </Link>
+              </div>
+            ) : (
               <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-gray-500 font-sans">Membre depuis</p>
-                  <p className="text-gray-900 font-sans">
-                    {user.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR', {
-                      year: 'numeric',
-                      month: 'long'
-                    }) : 'Non disponible'}
-                  </p>
-                </div>
-                
-                <div>
-                  <p className="text-sm text-gray-500 font-sans">Statut</p>
-                  <p className="text-green-600 font-sans font-medium">
-                    {user.email_confirmed_at ? 'Compte vérifié' : 'En attente de vérification'}
-                  </p>
-                </div>
+                {reservations.map((reservation) => (
+                  <div key={reservation.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                    <div className="flex gap-4">
+                      <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <span className="text-2xl">🎨</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 font-sans text-sm mb-1">
+                          Réservation #{reservation.id.slice(0, 8)}
+                        </h3>
+                        <p className="text-xs text-gray-600 font-sans mb-1">
+                          ID Atelier: {reservation.workshop_id}
+                        </p>
+                        <p className="text-xs text-gray-600 font-sans mb-2">
+                          Session: {reservation.stripe_session_id?.slice(0, 20)}...
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                            reservation.status === 'confirmed' 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {reservation.status === 'confirmed' ? 'Confirmé' : 'En attente'}
+                          </span>
+                          <span className="text-xs text-gray-500 font-sans">
+                            {new Date(reservation.created_at).toLocaleDateString('fr-FR')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
+
+          {/* Mes Achats */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#8a5c3b] rounded-full flex items-center justify-center">
+                <ShoppingBag className="w-5 h-5 text-white" />
+              </div>
+              <h2 className="text-xl font-bold text-[#8a5c3b] font-serif">
+                Mes Achats
+              </h2>
+            </div>
+            
+            {orders.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🛍️</div>
+                <h3 className="text-lg font-semibold text-gray-700 font-serif mb-2">
+                  Aucun achat pour le moment
+                </h3>
+                <p className="text-gray-500 font-sans mb-6">
+                  Découvrez notre boutique et trouvez vos outils créatifs
+                </p>
+                <Link 
+                  href="/boutique"
+                  className="inline-block bg-[#8a5c3b] hover:bg-[#a67c52] text-white rounded-lg px-6 py-3 font-sans transition-colors"
+                >
+                  Découvrir la boutique
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <div key={order.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                    <div className="flex gap-4">
+                      <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <span className="text-2xl">
+                          {order.workshop_id ? '🎨' : '🛍️'}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 font-sans text-sm mb-1">
+                          Commande #{order.id.slice(0, 8)}
+                        </h3>
+                        <p className="text-xs text-gray-600 font-sans mb-1">
+                          💰 {formatAmount(order.amount, order.currency)}
+                        </p>
+                        {order.workshop_id && (
+                          <p className="text-xs text-gray-500 font-sans mb-1">
+                            🎨 Atelier: {order.workshop_id}
+                          </p>
+                        )}
+                        {order.product_id && (
+                          <p className="text-xs text-gray-500 font-sans mb-1">
+                            🛍️ Produit: {order.product_id}
+                          </p>
+                        )}
+                        <p className="text-xs text-gray-500 font-sans mb-2">
+                          Session: {order.stripe_session_id?.slice(0, 20)}...
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                            order.status === 'paid' 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {order.status === 'paid' ? 'Payé' : 'En attente'}
+                          </span>
+                          <span className="text-xs text-gray-500 font-sans">
+                            {new Date(order.created_at).toLocaleDateString('fr-FR')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="text-center mt-12">
+          <Link 
+            href="/boutique"
+            className="bg-[#8a5c3b] hover:bg-[#a67c52] text-white rounded-lg px-8 py-3 font-medium font-sans transition-colors"
+          >
+            Retour à la boutique
+          </Link>
         </div>
       </div>
 
-      {/* Modals */}
-      {user && (
-        <ProfileEditModal
-          isOpen={showEditModal}
-          onClose={() => {
-            console.log('🔍 Fermeture du modal');
-            setShowEditModal(false);
-          }}
-          profile={profile || {
-            id: user.id || '',
-            full_name: null,
-            bio: null,
-            avatar_url: null,
-            phone: null,
-            created_at: new Date().toISOString()
-          }}
-          user={user}
-          onUpdate={handleProfileUpdate}
-        />
-      )}
-
-      <ChangePasswordModal
-        isOpen={showPasswordModal}
-        onClose={() => setShowPasswordModal(false)}
-      />
-
+      {/* Modal de suppression de compte */}
       <DeleteAccountModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

@@ -1,4 +1,6 @@
 "use client";
+import { useAuthModal } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/store/cart";
 import { useState } from "react";
 
@@ -13,10 +15,25 @@ export default function CheckoutButton({
 }) {
   const [loading, setLoading] = useState(false);
   const { items } = useCart();
+  const { user } = useAuth();
+  const { openAuthModal } = useAuthModal();
 
   const handleClick = async () => {
+    // Vérifier l'authentification
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+
     try {
       setLoading(true);
+      
+      // Préparer les données de base
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+      const successUrl = `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${baseUrl}/cancel`;
+      
+      console.log("🔗 URLs préparées:", { successUrl, cancelUrl, baseUrl });
       
       let requestBody;
       if (isCart) {
@@ -25,13 +42,29 @@ export default function CheckoutButton({
           price: i.priceId,
           quantity: i.qty,
         }));
-        requestBody = { lineItems };
+        requestBody = { 
+          lineItems,
+          userId: user.id,
+          userEmail: user.email,
+          successUrl,
+          cancelUrl
+        };
       } else if (priceId) {
         // Mode atelier unique
-        requestBody = { priceId, workshopSlug };
+        requestBody = { 
+          priceId, 
+          workshopSlug,
+          userId: user.id,
+          userEmail: user.email,
+          successUrl,
+          cancelUrl
+        };
       } else {
+        console.error("❌ Aucun priceId ou items dans le panier");
         return;
       }
+
+      console.log("📤 Envoi vers API:", requestBody);
 
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -42,16 +75,26 @@ export default function CheckoutButton({
       if (!res.ok) {
         const errorData = await res.text();
         console.error("❌ API Error:", res.status, errorData);
+        alert("Erreur lors de la création de la session de paiement. Veuillez réessayer.");
         return;
       }
       
       const data = await res.json();
-      if (data?.url) window.location.href = data.url;
-      else console.error("Stripe error:", data);
+      if (data?.url) {
+        console.log("✅ Redirection vers Stripe:", data.url);
+        window.location.href = data.url;
+      } else {
+        console.error("❌ Pas d'URL de redirection:", data);
+        alert("Erreur lors de la création de la session de paiement.");
+      }
+    } catch (error) {
+      console.error("❌ Erreur lors du checkout:", error);
+      alert("Une erreur est survenue. Veuillez réessayer.");
     } finally {
       setLoading(false);
     }
   };
+
 
   const buttonText = isCart 
     ? (loading ? "Redirection..." : "Payer maintenant") 

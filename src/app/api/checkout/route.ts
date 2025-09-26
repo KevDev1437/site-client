@@ -1,9 +1,18 @@
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import Stripe from "stripe";
 
 export async function POST(req: Request) {
   console.log("🔍 API Checkout appelée");
   
-  let priceId, workshopSlug, lineItems, productName, productPrice, productId;
+  if (!supabaseAdmin) {
+    console.error("❌ Supabase Admin non configuré");
+    return new Response(JSON.stringify({ error: "Supabase Admin not configured" }), { 
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+  
+  let priceId, workshopSlug, lineItems, productName, productPrice, productId, userId, userEmail, successUrl, cancelUrl;
   
   try {
     const body = await req.text();
@@ -24,8 +33,20 @@ export async function POST(req: Request) {
     productName = parsed.productName;
     productPrice = parsed.productPrice;
     productId = parsed.productId;
-    const successUrl = parsed.successUrl;
-    const cancelUrl = parsed.cancelUrl;
+    userId = parsed.userId;
+    userEmail = parsed.userEmail;
+    successUrl = parsed.successUrl;
+    cancelUrl = parsed.cancelUrl;
+    
+    console.log("🔍 Parsed URLs:", { 
+      successUrl, 
+      cancelUrl, 
+      successUrlType: typeof successUrl, 
+      cancelUrlType: typeof cancelUrl,
+      successUrlLength: successUrl?.length,
+      cancelUrlLength: cancelUrl?.length
+    });
+    console.log("👤 User info:", { userId, userEmail });
     
     console.log("📋 Parsed data:", { priceId, workshopSlug, lineItems, productName, productPrice, productId, successUrl, cancelUrl });
   } catch (error) {
@@ -59,7 +80,11 @@ export async function POST(req: Request) {
     if (lineItems) {
       // Mode panier : utiliser les lineItems fournis
       sessionLineItems = lineItems;
-      metadata = { type: "cart" };
+      metadata = { 
+        type: "cart",
+        userId: userId || "anonymous",
+        userEmail: userEmail || "unknown"
+      };
       console.log("🛒 Mode panier:", lineItems);
     } else if (priceId) {
       // Mode produit unique ou atelier unique
@@ -71,15 +96,49 @@ export async function POST(req: Request) {
           productName, 
           productPrice: productPrice.toString(), 
           productId,
-          type: "product" 
+          type: "product",
+          userId: userId || "anonymous",
+          userEmail: userEmail || "unknown"
         };
         console.log("🛍️ Mode produit boutique:", { productName, productPrice, productId });
       } else if (workshopSlug) {
-        // Mode atelier
-        metadata = { workshopSlug, type: "workshop" };
-        console.log("🎯 Mode atelier:", { priceId, workshopSlug });
+        // Mode atelier - récupérer l'ID de l'atelier
+        const { data: workshop } = await supabaseAdmin
+          .from('workshops')
+          .select('id, seats, title')
+          .eq('slug', workshopSlug)
+          .single();
+
+        if (!workshop) {
+          console.error("❌ Atelier introuvable:", workshopSlug);
+          return new Response(JSON.stringify({ error: "Workshop not found" }), { 
+            status: 404,
+            headers: { "Content-Type": "application/json" }
+          });
+        }
+
+        if (workshop.seats <= 0) {
+          console.error("❌ Plus de places disponibles:", workshop.title);
+          return new Response(JSON.stringify({ error: "No seats available" }), { 
+            status: 400,
+            headers: { "Content-Type": "application/json" }
+          });
+        }
+
+        metadata = { 
+          workshopId: workshop.id,
+          workshopSlug, 
+          type: "workshop",
+          userId: userId || "anonymous",
+          userEmail: userEmail || "unknown"
+        };
+        console.log("🎯 Mode atelier:", { priceId, workshopSlug, workshopId: workshop.id });
       } else {
-        metadata = { type: "single" };
+        metadata = { 
+          type: "single",
+          userId: userId || "anonymous",
+          userEmail: userEmail || "unknown"
+        };
         console.log("🎯 Mode générique:", { priceId });
       }
     } else {
@@ -92,22 +151,31 @@ export async function POST(req: Request) {
 
     console.log("💳 Creating Stripe session...");
     
-    // Déterminer l'URL de base et nettoyer les slashes
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, '');
-    if (!baseUrl) {
-      console.error("❌ Missing NEXT_PUBLIC_SITE_URL");
-      return new Response(JSON.stringify({ error: "Missing NEXT_PUBLIC_SITE_URL" }), { 
-        status: 500, 
-        headers: { "Content-Type": "application/json" } 
+    // Déterminer les URLs de retour
+    const finalSuccessUrl = successUrl || `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`;
+    const finalCancelUrl = cancelUrl || `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/cancel`;
+    
+    console.log("🔗 URLs de retour:", { 
+      success: finalSuccessUrl, 
+      cancel: finalCancelUrl,
+      successUrlProvided: !!successUrl,
+      cancelUrlProvided: !!cancelUrl,
+      envSiteUrl: process.env.NEXT_PUBLIC_SITE_URL
+    });
+
+    // Vérifier que les URLs sont définies
+    if (!finalSuccessUrl || !finalCancelUrl) {
+      console.error("❌ URLs manquantes:", { 
+        finalSuccessUrl, 
+        finalCancelUrl,
+        successUrlProvided: !!successUrl,
+        cancelUrlProvided: !!cancelUrl
+      });
+      return new Response(JSON.stringify({ error: "Missing success or cancel URL" }), { 
+        status: 500,
+        headers: { "Content-Type": "application/json" }
       });
     }
-    console.log("🌐 Base URL:", baseUrl);
-    
-    // Déterminer les URLs de retour
-    const finalSuccessUrl = successUrl || `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`;
-    const finalCancelUrl = cancelUrl || `${baseUrl}/cancel`;
-    
-    console.log("🔗 URLs de retour:", { success: finalSuccessUrl, cancel: finalCancelUrl });
 
     // Mode payment pour achats uniques
     const session = await stripe.checkout.sessions.create({
@@ -124,6 +192,16 @@ export async function POST(req: Request) {
     });
 
     console.log("✅ Stripe session created:", session.id);
+    console.log("🔗 Session URL:", session.url);
+    
+    if (!session.url) {
+      console.error("❌ Pas d'URL de session Stripe");
+      return new Response(JSON.stringify({ error: "No session URL returned from Stripe" }), { 
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { "Content-Type": "application/json" },
     });

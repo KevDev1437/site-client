@@ -36,6 +36,10 @@ export default function UniversalImage({
       className={className}
       onError={handleError}
       loading="lazy"
+      style={{
+        objectFit: 'cover',
+        objectPosition: 'center'
+      }}
     />
   );
 }

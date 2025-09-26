@@ -39,7 +39,7 @@ export default function Header() {
     }`}>
 <nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-28 pt-8">
           {/* Espace vide à gauche pour équilibrer */}
           <div className="w-32"></div>
           

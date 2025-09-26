@@ -1,15 +1,14 @@
 export const dynamic = "force-dynamic";
 
 import EmailConfirmationBanner from '@/components/auth/EmailConfirmationBanner';
-import BoutiqueSection from '@/components/blocks/BoutiqueSection';
 import ContactTiles from '@/components/blocks/ContactTiles';
 import CreeTonMomentSection from '@/components/blocks/CreeTonMomentSection';
-import EventsGrid from '@/components/blocks/EventsGrid';
+import ElegantAteliersSection from '@/components/blocks/ElegantAteliersSection';
+import ElegantBoutiqueSection from '@/components/blocks/ElegantBoutiqueSection';
 import FounderIntro from '@/components/blocks/FounderIntro';
 import MomentsCreationSection from '@/components/blocks/MomentsCreationSection';
 import PhotoMosaic from '@/components/blocks/PhotoMosaic';
 import Button from '@/components/ui/Button';
-import SectionTitle from '@/components/ui/SectionTitle';
 
 export default function Home() {
   return (
@@ -41,12 +40,10 @@ export default function Home() {
       <CreeTonMomentSection />
 
       {/* Section Boutique */}
-      <BoutiqueSection />
+      <ElegantBoutiqueSection maxProducts={4} />
 
-      {/* Section Ateliers (EventsGrid intégré) */}
-      <section id="events" className="py-24 bg-boutique px-6">
-      <EventsGrid />
-      </section>
+      {/* Section Ateliers */}
+      <ElegantAteliersSection />
 
       {/* Section Galerie (PhotoMosaic intégré) */}
       <section className="py-24 bg-beige-tres-clair px-6">
