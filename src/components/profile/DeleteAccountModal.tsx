@@ -13,6 +13,7 @@ interface DeleteAccountModalProps {
 
 export default function DeleteAccountModal({ isOpen, onClose, userEmail }: DeleteAccountModalProps) {
   const [confirmText, setConfirmText] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const router = useRouter();
@@ -30,13 +31,29 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
       return;
     }
 
+    if (!password.trim()) {
+      setMessage({ type: 'error', text: 'Veuillez saisir votre mot de passe' });
+      setLoading(false);
+      return;
+    }
+
     try {
       if (!supabase) {
         throw new Error('Supabase client non initialisé');
       }
 
-      // Supprimer le compte utilisateur
-      const { error } = await supabase.rpc('delete_user');
+      // 1. Vérifier le mot de passe en se reconnectant
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: userEmail,
+        password: password
+      });
+
+      if (signInError) {
+        throw new Error('Mot de passe incorrect');
+      }
+
+      // 2. Supprimer le compte utilisateur avec la fonction corrigée
+      const { error } = await supabase.rpc('delete_user_corrected');
 
       if (error) {
         throw new Error(error.message);
@@ -59,6 +76,7 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
 
   const resetForm = () => {
     setConfirmText('');
+    setPassword('');
     setMessage(null);
   };
 
@@ -124,6 +142,22 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Champ mot de passe */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Mot de passe actuel
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                placeholder="Saisissez votre mot de passe"
+                required
+              />
+            </div>
+
+            {/* Confirmation texte */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Pour confirmer la suppression, tapez exactement :
@@ -158,7 +192,7 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
               </button>
               <button
                 type="submit"
-                disabled={loading || confirmText !== expectedText}
+                disabled={loading || confirmText !== expectedText || !password.trim()}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
