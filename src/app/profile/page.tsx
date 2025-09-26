@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@/components/ui/Button';
 import ChangePasswordModal from '@/components/profile/ChangePasswordModal';
 import DeleteAccountModal from '@/components/profile/DeleteAccountModal';
 import ProfileEditModal from '@/components/profile/ProfileEditModal';
+import Button from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
 import { Calendar, Edit, Heart, Key, LogOut, Mail, Phone, ShoppingBag, Trash2, User } from 'lucide-react';
 import Image from 'next/image';
@@ -68,15 +68,51 @@ export default function ProfilePage() {
         setUser(session.user);
 
         // Récupérer le profil depuis la table profiles
+        console.log('🔍 Récupération du profil pour user:', session.user.id);
         const { data: profileData, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single();
 
+        console.log('🔍 Résultat profil:', { profileData, error });
+
         if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-          console.error('Erreur lors de la récupération du profil:', error);
+          console.error('❌ Erreur lors de la récupération du profil:', error);
+          
+          // Si la table n'existe pas ou si l'utilisateur n'a pas de profil, en créer un
+          if (error.code === 'PGRST116' || error.message.includes('relation "profiles" does not exist')) {
+            console.log('🔄 Création d\'un profil par défaut...');
+            const { data: newProfile, error: createError } = await supabase
+              .from('profiles')
+              .insert({
+                id: session.user.id,
+                full_name: null,
+                bio: null,
+                avatar_url: null,
+                phone: null
+              })
+              .select()
+              .single();
+
+            if (createError) {
+              console.error('❌ Erreur création profil:', createError);
+              // Créer un profil par défaut côté client
+              setProfile({
+                id: session.user.id,
+                full_name: null,
+                bio: null,
+                avatar_url: null,
+                phone: null,
+                created_at: new Date().toISOString()
+              });
+            } else {
+              console.log('✅ Profil créé:', newProfile);
+              setProfile(newProfile);
+            }
+          }
         } else {
+          console.log('✅ Profil trouvé:', profileData);
           setProfile(profileData);
         }
 
