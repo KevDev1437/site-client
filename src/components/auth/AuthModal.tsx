@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase';
 import { Eye, EyeOff, Lock, Mail, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -19,6 +19,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const supabase = createClient();
+
+  // Auto-dismiss error messages after 5 seconds
+  useEffect(() => {
+    if (message?.type === 'error') {
+      const timer = setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,12 +158,19 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         {/* Content */}
         <div className="p-6">
           {message && (
-            <div className={`mb-4 p-3 rounded-lg text-sm ${
+            <div className={`mb-4 p-3 rounded-lg text-sm flex items-center justify-between ${
               message.type === 'success' 
                 ? 'bg-green-50 text-green-700 border border-green-200' 
                 : 'bg-red-50 text-red-700 border border-red-200'
             }`}>
-              {message.text}
+              <span>{message.text}</span>
+              <button
+                onClick={() => setMessage(null)}
+                className="ml-2 text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Fermer le message"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           )}
 
