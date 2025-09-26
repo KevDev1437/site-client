@@ -14,7 +14,7 @@ export default function CreeTonMomentSection() {
         
         // Récupérer l'URL publique de la vidéo depuis Supabase Storage
         const { data } = supabase.storage
-          .from('images') // Nom du bucket dans Supabase Storage
+          .from('videos') // Nom du bucket dans Supabase Storage
           .getPublicUrl('cree-ton-moment.mp4'); // Nom du fichier vidéo dans le bucket
 
         if (data?.publicUrl) {
