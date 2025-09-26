@@ -152,9 +152,37 @@ export default function ProfilePage() {
     }
   };
 
-  const handleProfileUpdate = () => {
+  const handleProfileUpdate = async () => {
     // Recharger les données du profil
-    getUser();
+    if (!supabase) {
+      console.error('Supabase client non initialisé');
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user) {
+        return;
+      }
+
+      setUser(session.user);
+
+      // Récupérer le profil depuis la table profiles
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Erreur lors de la récupération du profil:', error);
+      } else {
+        setProfile(profileData);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+    }
   };
 
   if (loading) {
@@ -272,7 +300,10 @@ export default function ProfilePage() {
               <div className="mt-8 pt-6 border-t border-gray-100">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <button
-                    onClick={() => setShowEditModal(true)}
+                    onClick={() => {
+                      console.log('🔍 Clic sur Modifier le profil', { showEditModal, profile });
+                      setShowEditModal(true);
+                    }}
                     className="bg-terracotta hover:bg-rose-poudre text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
                   >
                     <Edit className="w-4 h-4" />
@@ -471,10 +502,13 @@ export default function ProfilePage() {
       </div>
 
       {/* Modals */}
-      {profile && (
+      {profile && user && (
         <ProfileEditModal
           isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
+          onClose={() => {
+            console.log('🔍 Fermeture du modal');
+            setShowEditModal(false);
+          }}
           profile={profile}
           user={user}
           onUpdate={handleProfileUpdate}

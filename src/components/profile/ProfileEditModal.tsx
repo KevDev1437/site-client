@@ -52,16 +52,28 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
 
   const uploadAvatar = async (file: File): Promise<string | null> => {
     try {
+      if (!supabase) {
+        console.error('Supabase client non initialisé');
+        return null;
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${profile.id}.${fileExt}`;
       const filePath = `avatars/${fileName}`;
+
+      console.log('🔄 Upload avatar:', { fileName, filePath, fileSize: file.size });
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { upsert: true });
 
       if (uploadError) {
-        console.error('Erreur upload avatar:', uploadError);
+        console.error('❌ Erreur upload avatar:', uploadError);
+        // Si le bucket n'existe pas, on peut essayer de le créer ou utiliser une URL temporaire
+        if (uploadError.message.includes('Bucket not found')) {
+          console.warn('⚠️ Bucket avatars non trouvé, utilisation d\'une URL temporaire');
+          return URL.createObjectURL(file);
+        }
         return null;
       }
 
@@ -69,9 +81,10 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
         .from('avatars')
         .getPublicUrl(filePath);
 
+      console.log('✅ Avatar uploadé:', data.publicUrl);
       return data.publicUrl;
     } catch (error) {
-      console.error('Erreur upload avatar:', error);
+      console.error('❌ Erreur upload avatar:', error);
       return null;
     }
   };
@@ -89,9 +102,14 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
       // Upload avatar si nouveau fichier
       let avatarUrl = profile.avatar_url;
       if (avatarFile) {
+        console.log('🔄 Upload en cours...');
         const uploadedUrl = await uploadAvatar(avatarFile);
         if (uploadedUrl) {
           avatarUrl = uploadedUrl;
+          console.log('✅ Avatar uploadé avec succès:', uploadedUrl);
+        } else {
+          console.warn('⚠️ Échec de l\'upload, conservation de l\'avatar actuel');
+          // On continue avec l'avatar actuel si l'upload échoue
         }
       }
 
@@ -135,6 +153,8 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
       setLoading(false);
     }
   };
+
+  console.log('🔍 ProfileEditModal render:', { isOpen, profile: profile?.id, user: user?.email });
 
   if (!isOpen) return null;
 
