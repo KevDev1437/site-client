@@ -1,6 +1,6 @@
 'use client';
 
-import { cleanupInvalidSessions } from '@/lib/auth-cleanup';
+import { cleanupInvalidSessions, initializeAuthCleanupWithCleanup } from '@/lib/auth-cleanup';
 import { supabase } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
@@ -50,6 +50,9 @@ export function useAuth() {
 
     getSession();
 
+    // ✅ Initialiser le nettoyage automatique avec cleanup pour React
+    const cleanupAuth = initializeAuthCleanupWithCleanup();
+
     // ✅ On sécurise l'écouteur d'événements
     const { data: authListener } =
       supabase?.auth.onAuthStateChange?.((event, session) => {
@@ -87,6 +90,7 @@ export function useAuth() {
 
     return () => {
       authListener?.subscription?.unsubscribe();
+      cleanupAuth(); // ✅ Nettoyer les event listeners et intervals
     };
   }, []);
 

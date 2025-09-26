@@ -35,8 +35,14 @@ export async function cleanupInvalidSessions(): Promise<void> {
   }
 }
 
+// Types pour les event handlers
+type BeforeUnloadHandler = (event: BeforeUnloadEvent) => void;
+type VisibilityChangeHandler = () => void;
+type OnlineHandler = (event: Event) => void;
+
 /**
  * Vérifie et nettoie automatiquement les sessions au démarrage
+ * Version pour usage général (sans retour de cleanup)
  */
 export function initializeAuthCleanup(): void {
   // Nettoyer au chargement de la page
@@ -46,14 +52,14 @@ export function initializeAuthCleanup(): void {
   const cleanupInterval = setInterval(cleanupInvalidSessions, 5 * 60 * 1000);
   
   // Nettoyer avant la fermeture de la page
-  const handleBeforeUnload = () => {
+  const handleBeforeUnload: BeforeUnloadHandler = () => {
     cleanupInvalidSessions();
   };
   
   window.addEventListener('beforeunload', handleBeforeUnload);
   
   // Nettoyer quand la page devient visible (retour d'onglet)
-  const handleVisibilityChange = () => {
+  const handleVisibilityChange: VisibilityChangeHandler = () => {
     if (!document.hidden) {
       cleanupInvalidSessions();
     }
@@ -62,14 +68,56 @@ export function initializeAuthCleanup(): void {
   document.addEventListener('visibilitychange', handleVisibilityChange);
   
   // Nettoyer quand la connexion revient
-  const handleOnline = () => {
+  const handleOnline: OnlineHandler = () => {
     cleanupInvalidSessions();
   };
   
   window.addEventListener('online', handleOnline);
   
-  // Retourner une fonction de nettoyage
-  return () => {
+  // Nettoyage automatique après 10 minutes (fallback)
+  setTimeout(() => {
+    clearInterval(cleanupInterval);
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
+    window.removeEventListener('online', handleOnline);
+  }, 10 * 60 * 1000);
+}
+
+/**
+ * Version pour React useEffect avec retour de cleanup function
+ */
+export function initializeAuthCleanupWithCleanup(): () => void {
+  // Nettoyer au chargement de la page
+  cleanupInvalidSessions();
+  
+  // Nettoyer périodiquement (toutes les 5 minutes)
+  const cleanupInterval = setInterval(cleanupInvalidSessions, 5 * 60 * 1000);
+  
+  // Nettoyer avant la fermeture de la page
+  const handleBeforeUnload: BeforeUnloadHandler = () => {
+    cleanupInvalidSessions();
+  };
+  
+  window.addEventListener('beforeunload', handleBeforeUnload);
+  
+  // Nettoyer quand la page devient visible (retour d'onglet)
+  const handleVisibilityChange: VisibilityChangeHandler = () => {
+    if (!document.hidden) {
+      cleanupInvalidSessions();
+    }
+  };
+  
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  
+  // Nettoyer quand la connexion revient
+  const handleOnline: OnlineHandler = () => {
+    cleanupInvalidSessions();
+  };
+  
+  window.addEventListener('online', handleOnline);
+  
+  // Retourner une fonction de nettoyage pour React
+  return (): void => {
     clearInterval(cleanupInterval);
     window.removeEventListener('beforeunload', handleBeforeUnload);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
