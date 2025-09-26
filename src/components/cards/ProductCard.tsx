@@ -1,8 +1,8 @@
 import { Product } from '@/types/product';
 import { Eye, ShoppingCart } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import UniversalImage from '@/components/ui/UniversalImage';
 
 interface ProductCardProps {
   product: Product;
@@ -30,7 +30,7 @@ export default function ProductCard({ product, showDescription = false, onPurcha
   return (
     <div className="card-elegant p-6 text-center group-hover:card-elevated transition-all duration-300">
       <div className="aspect-square rounded-2xl overflow-hidden mb-6">
-        <Image
+        <UniversalImage
           src={product.image_url}
           alt={product.title}
           width={400}
