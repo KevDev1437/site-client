@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import EmailConfirmationBanner from '@/components/auth/EmailConfirmationBanner';
 import ContactTiles from '@/components/blocks/ContactTiles';
+import CreeTonMomentSection from '@/components/blocks/CreeTonMomentSection';
 import EventsGrid from '@/components/blocks/EventsGrid';
 import FounderIntro from '@/components/blocks/FounderIntro';
 import PhotoMosaic from '@/components/blocks/PhotoMosaic';
@@ -121,27 +122,7 @@ export default function Home() {
       </section>
 
       {/* Section "Crée ton moment" - Diviseur */}
-      <section 
-        className="relative py-32 px-6"
-        style={{
-          backgroundImage: 'url(/cree-ton-moment.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        {/* Overlay pour améliorer la lisibilité du texte */}
-        <div className="absolute inset-0 bg-black/20"></div>
-        
-        <div className="relative z-10 text-center">
-          <h2 className="font-serif text-4xl font-medium text-white text-center tracking-wide drop-shadow-lg">
-            Crée ton moment 🕯
-          </h2>
-          <p className="font-sans text-base text-white mt-2 max-w-2xl mx-auto drop-shadow-md">
-            Accorde-toi une pause, respire, et laisse émerger ton univers intérieur
-          </p>
-        </div>
-      </section>
+      <CreeTonMomentSection />
 
       {/* Section Boutique */}
       <section className="py-24 bg-beige-fonce px-6">
