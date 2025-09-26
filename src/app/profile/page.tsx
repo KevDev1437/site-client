@@ -1,8 +1,11 @@
 'use client';
 
 import Button from '@/components/ui/Button';
+import ChangePasswordModal from '@/components/profile/ChangePasswordModal';
+import DeleteAccountModal from '@/components/profile/DeleteAccountModal';
+import ProfileEditModal from '@/components/profile/ProfileEditModal';
 import { supabase } from '@/lib/supabase';
-import { Calendar, Heart, LogOut, Mail, User } from 'lucide-react';
+import { Calendar, Edit, Heart, Key, LogOut, Mail, Phone, ShoppingBag, Trash2, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -12,14 +15,38 @@ interface Profile {
   full_name: string | null;
   bio: string | null;
   avatar_url: string | null;
+  phone: string | null;
   created_at: string;
+}
+
+interface Purchase {
+  id: string;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+  purchase_date: string;
+  status: string;
+}
+
+interface WorkshopBooking {
+  id: string;
+  workshop_name: string;
+  workshop_date: string;
+  booking_date: string;
+  status: string;
+  price: number;
 }
 
 export default function ProfilePage() {
   const [user, setUser] = useState<{ email?: string; created_at?: string; email_confirmed_at?: string } | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [bookings, setBookings] = useState<WorkshopBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -51,6 +78,32 @@ export default function ProfilePage() {
           console.error('Erreur lors de la récupération du profil:', error);
         } else {
           setProfile(profileData);
+        }
+
+        // Récupérer les achats
+        const { data: purchasesData, error: purchasesError } = await supabase
+          .from('user_purchases')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .order('purchase_date', { ascending: false });
+
+        if (purchasesError) {
+          console.error('Erreur lors de la récupération des achats:', purchasesError);
+        } else {
+          setPurchases(purchasesData || []);
+        }
+
+        // Récupérer les réservations d'ateliers
+        const { data: bookingsData, error: bookingsError } = await supabase
+          .from('workshop_bookings')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .order('workshop_date', { ascending: false });
+
+        if (bookingsError) {
+          console.error('Erreur lors de la récupération des réservations:', bookingsError);
+        } else {
+          setBookings(bookingsData || []);
         }
       } catch (error) {
         console.error('Erreur:', error);
@@ -88,10 +141,20 @@ export default function ProfilePage() {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Erreur lors de la déconnexion:', error);
+      } else {
+        setIsLoggedOut(true);
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
       }
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     }
+  };
+
+  const handleProfileUpdate = () => {
+    // Recharger les données du profil
+    getUser();
   };
 
   if (loading) {
@@ -191,6 +254,12 @@ export default function ProfilePage() {
                     <Mail className="w-4 h-4" />
                     <span className="font-sans">{user.email}</span>
                   </div>
+                  {profile?.phone && (
+                    <div className="flex items-center gap-2 text-gray-600 mb-2">
+                      <Phone className="w-4 h-4" />
+                      <span className="font-sans">{profile.phone}</span>
+                    </div>
+                  )}
                   {profile?.bio && (
                     <p className="text-gray-600 font-sans leading-relaxed">
                       {profile.bio}
@@ -199,15 +268,41 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Bouton Déconnexion */}
+              {/* Actions */}
               <div className="mt-8 pt-6 border-t border-gray-100">
-                <button
-                  onClick={handleLogout}
-                  className="bg-terracotta hover:bg-rose-poudre text-white rounded-full px-6 py-2 font-sans transition-colors duration-300 flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Se déconnecter
-                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    onClick={() => setShowEditModal(true)}
+                    className="bg-terracotta hover:bg-rose-poudre text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Modifier le profil
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowPasswordModal(true)}
+                    className="bg-gray-600 hover:bg-gray-700 text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
+                  >
+                    <Key className="w-4 h-4" />
+                    Changer le mot de passe
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="bg-red-600 hover:bg-red-700 text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Supprimer le compte
+                  </button>
+                  
+                  <button
+                    onClick={handleLogout}
+                    className="bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-4 py-2 font-sans transition-colors duration-300 flex items-center justify-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Se déconnecter
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -216,27 +311,132 @@ export default function ProfilePage() {
               <div className="flex items-center gap-3 mb-6">
                 <Calendar className="w-6 h-6 text-terracotta" />
                 <h3 className="text-xl font-serif font-semibold text-gray-900">
-                  Mes Ateliers Réservés
+                  Mes Ateliers Réservés ({bookings.length})
                 </h3>
               </div>
               
-              <div className="text-center py-12">
-                <div className="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Heart className="w-8 h-8 text-gray-400" />
+              {bookings.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Heart className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 font-sans">
+                    Aucun atelier réservé pour le moment
+                  </p>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Découvrez nos ateliers créatifs
+                  </p>
+                  <Button 
+                    href="/workshops" 
+                    className="mt-4 bg-terracotta hover:bg-rose-poudre text-white rounded-full px-6 py-2"
+                  >
+                    Voir les ateliers
+                  </Button>
                 </div>
-                <p className="text-gray-500 font-sans">
-                  Aucun atelier réservé pour le moment
-                </p>
-                <p className="text-sm text-gray-400 mt-2">
-                  Découvrez nos ateliers créatifs
-                </p>
-                <Button 
-                  href="/workshops" 
-                  className="mt-4 bg-terracotta hover:bg-rose-poudre text-white rounded-full px-6 py-2"
-                >
-                  Voir les ateliers
-                </Button>
+              ) : (
+                <div className="space-y-4">
+                  {bookings.map((booking) => (
+                    <div key={booking.id} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{booking.workshop_name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {new Date(booking.workshop_date).toLocaleDateString('fr-FR', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Réservé le {new Date(booking.booking_date).toLocaleDateString('fr-FR')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-terracotta">{booking.price}€</p>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                            booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {booking.status === 'confirmed' ? 'Confirmé' :
+                             booking.status === 'pending' ? 'En attente' :
+                             booking.status === 'cancelled' ? 'Annulé' :
+                             booking.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mes Achats */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <ShoppingBag className="w-6 h-6 text-terracotta" />
+                <h3 className="text-xl font-serif font-semibold text-gray-900">
+                  Mes Achats ({purchases.length})
+                </h3>
               </div>
+              
+              {purchases.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <ShoppingBag className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 font-sans">
+                    Aucun achat pour le moment
+                  </p>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Découvrez notre boutique
+                  </p>
+                  <Button 
+                    href="/shop" 
+                    className="mt-4 bg-terracotta hover:bg-rose-poudre text-white rounded-full px-6 py-2"
+                  >
+                    Voir la boutique
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {purchases.map((purchase) => (
+                    <div key={purchase.id} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{purchase.product_name}</h4>
+                          <p className="text-sm text-gray-600">
+                            Quantité: {purchase.quantity}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Acheté le {new Date(purchase.purchase_date).toLocaleDateString('fr-FR')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-terracotta">
+                            {(purchase.product_price * purchase.quantity).toFixed(2)}€
+                          </p>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            purchase.status === 'completed' ? 'bg-green-100 text-green-800' :
+                            purchase.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            purchase.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {purchase.status === 'completed' ? 'Terminé' :
+                             purchase.status === 'pending' ? 'En attente' :
+                             purchase.status === 'cancelled' ? 'Annulé' :
+                             purchase.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -269,6 +469,28 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {profile && (
+        <ProfileEditModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          profile={profile}
+          user={user}
+          onUpdate={handleProfileUpdate}
+        />
+      )}
+
+      <ChangePasswordModal
+        isOpen={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+      />
+
+      <DeleteAccountModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        userEmail={user?.email || ''}
+      />
     </div>
   );
 }
