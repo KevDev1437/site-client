@@ -1,3 +1,4 @@
+import { AuthErrorHandler } from "@/components/auth/AuthErrorHandler";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/NavBar";
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900 font-sans`}
       >
         <AuthProvider>
+          <AuthErrorHandler />
           <Header />
           <main className="pt-28">
             {children}

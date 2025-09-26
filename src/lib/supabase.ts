@@ -20,7 +20,13 @@ export const supabase = supabaseUrl && supabaseAnonKey
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true
+        detectSessionInUrl: true,
+        flowType: 'pkce' // Utiliser PKCE pour une meilleure sécurité
+      },
+      global: {
+        headers: {
+          'X-Client-Info': 'yapha-creative-studio'
+        }
       }
     })
   : null;
@@ -34,7 +40,13 @@ export const createClient = () => {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true
+      detectSessionInUrl: true,
+      flowType: 'pkce' // Utiliser PKCE pour une meilleure sécurité
+    },
+    global: {
+      headers: {
+        'X-Client-Info': 'yapha-creative-studio'
+      }
     }
   });
 };

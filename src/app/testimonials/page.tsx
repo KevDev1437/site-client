@@ -1,52 +1,93 @@
-import SectionTitle from '@/components/ui/SectionTitle';
-import Image from 'next/image';
+'use client';
 
-const testimonials = [
+import SectionTitle from '@/components/ui/SectionTitle';
+import { createClient } from '@/lib/supabase';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+
+type Testimonial = {
+  id: string;
+  name: string;
+  photo: string;
+  quote: string;
+};
+
+const defaultTestimonials = [
   {
-    id: 1,
+    id: "1",
     name: "Marie L.",
     photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-    quote: "Un moment magique ! J&apos;ai découvert la peinture à l&apos;huile dans une ambiance incroyable. Julie est une prof exceptionnelle."
+    quote: "Un moment magique ! J'ai découvert la peinture à l'huile dans une ambiance incroyable. Julie est une prof exceptionnelle."
   },
   {
-    id: 2,
+    id: "2",
     name: "Thomas M.",
     photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    quote: "L&apos;atelier crochet était parfait pour débuter. J&apos;ai créé mon premier sac et j&apos;en suis très fier !"
+    quote: "L'atelier crochet était parfait pour débuter. J'ai créé mon premier sac et j'en suis très fier !"
   },
   {
-    id: 3,
+    id: "3",
     name: "Sophie D.",
     photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    quote: "L&apos;ambiance est si chaleureuse ! On se sent tout de suite à l&apos;aise. Je recommande vivement ces ateliers."
+    quote: "L'ambiance est si chaleureuse ! On se sent tout de suite à l'aise. Je recommande vivement ces ateliers."
   },
   {
-    id: 4,
+    id: "4",
     name: "Pierre R.",
     photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    quote: "La poterie m&apos;a toujours fasciné. Grâce à cet atelier, j&apos;ai pu enfin m&apos;y mettre. Une expérience inoubliable !"
+    quote: "La poterie m'a toujours fasciné. Grâce à cet atelier, j'ai pu enfin m'y mettre. Une expérience inoubliable !"
   },
   {
-    id: 5,
+    id: "5",
     name: "Emma K.",
     photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
     quote: "Le brunch peinture était parfait ! On mange bien, on crée, on rigole. Que demander de plus ?"
   },
   {
-    id: 6,
+    id: "6",
     name: "Lucas B.",
     photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
-    quote: "La calligraphie moderne m&apos;a ouvert de nouveaux horizons. Un art magnifique enseigné avec passion."
+    quote: "La calligraphie moderne m'a ouvert de nouveaux horizons. Un art magnifique enseigné avec passion."
   }
 ];
 
 export default function TestimonialsPage() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(defaultTestimonials);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      setLoading(true);
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase.from('testimonials').select('*');
+        if (!error && data && data.length > 0) {
+          setTestimonials(data);
+        }
+        // Si pas de données en base, on garde les témoignages par défaut
+      } catch (error) {
+        console.error('Erreur lors du chargement des témoignages:', error);
+        // En cas d'erreur, on garde les témoignages par défaut
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTestimonials();
+  }, []);
+
   return (
-    <div className="py-20">
+    <div className="pt-28 pb-20">
       <SectionTitle 
         title="Nos souvenirs"
         subtitle="Découvrez les témoignages de nos participants et partagez leurs moments de bonheur créatif"
       />
+
+      {loading && (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8a5c3b] mx-auto mb-4"></div>
+          <p className="text-gray-600 font-sans">Chargement des témoignages...</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {testimonials.map((testimonial) => (
