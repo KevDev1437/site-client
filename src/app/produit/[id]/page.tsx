@@ -34,7 +34,7 @@ export default function ProductPage() {
             Produit introuvable
           </h1>
           <p className="font-sans text-lg text-gray-600 mb-8">
-            Le produit que vous recherchez n'existe pas ou a été supprimé.
+            Le produit que vous recherchez n&apos;existe pas ou a été supprimé.
           </p>
           <Link 
             href="/boutique"
@@ -64,11 +64,11 @@ export default function ProductPage() {
           {/* Image du produit */}
           <div className="aspect-square rounded-2xl overflow-hidden">
             <Image
-              src={product.image_url}
+              src={product.image_url ?? "/placeholder.png"}
               alt={product.title}
               width={600}
               height={600}
-              className="w-full h-full object-cover"
+              className="object-cover w-full h-full"
               priority
             />
           </div>

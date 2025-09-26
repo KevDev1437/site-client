@@ -1,23 +1,24 @@
 import { create } from "zustand";
 
 type CartItem = {
-  id: string;       // workshop id
+  id: string;
   title: string;
   price: number;
-  priceId: string;
+  priceId?: string;
+  image_url?: string;
   qty: number;
 };
 
 type CartState = {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "qty">) => void;
-  removeItem: (id: string) => void;
-  clear: () => void;
+  addToCart: (item: Omit<CartItem, "qty">) => void;
+  removeFromCart: (id: string) => void;
+  clearCart: () => void;
 };
 
 export const useCart = create<CartState>((set) => ({
   items: [],
-  addItem: (item) =>
+  addToCart: (item) =>
     set((state) => {
       const exists = state.items.find((i) => i.id === item.id);
       if (exists) {
@@ -29,7 +30,7 @@ export const useCart = create<CartState>((set) => ({
       }
       return { items: [...state.items, { ...item, qty: 1 }] };
     }),
-  removeItem: (id) =>
+  removeFromCart: (id) =>
     set((state) => ({ items: state.items.filter((i) => i.id !== id) })),
-  clear: () => set({ items: [] }),
+  clearCart: () => set({ items: [] }),
 }));

@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 
 export default function CreeTonMomentSection() {
   const [backgroundVideo, setBackgroundVideo] = useState<string>(''); // Pas d'URL par défaut
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBackgroundVideo = async () => {
@@ -29,8 +28,6 @@ export default function CreeTonMomentSection() {
         }
       } catch (error) {
         console.error('❌ Erreur lors du chargement de la vidéo depuis Supabase:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

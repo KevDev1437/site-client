@@ -20,7 +20,7 @@ export default function ElegantBoutiqueSection({
 
   if (loading) {
     return (
-      <section className="py-24 bg-beige-fonce px-6">
+      <section className="pt-28 pb-24 bg-beige-fonce px-6">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-terracotta mx-auto"></div>
@@ -33,7 +33,7 @@ export default function ElegantBoutiqueSection({
 
   if (error) {
     return (
-      <section className="py-24 bg-beige-fonce px-6">
+      <section className="pt-28 pb-24 bg-beige-fonce px-6">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <p className="font-sans text-red-600">Erreur lors du chargement des produits</p>
@@ -49,7 +49,7 @@ export default function ElegantBoutiqueSection({
     : products.slice(0, maxProducts);
 
   return (
-    <section className="py-24 bg-beige-fonce px-6">
+    <section className="pt-28 pb-24 bg-beige-fonce px-6">
       <div className="max-w-7xl mx-auto px-6">
         <SectionTitle 
           title={showAllProducts ? "Notre Boutique" : ""}

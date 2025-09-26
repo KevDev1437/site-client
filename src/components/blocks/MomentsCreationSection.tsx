@@ -46,7 +46,36 @@ export default function MomentsCreationSection() {
         
         // Récupérer les URLs publiques des images depuis Supabase Storage
         const imageFiles = ['image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg'];
-        const updatedMoments = [...moments];
+        
+        // Utiliser les moments par défaut comme base
+        const defaultMoments = [
+          {
+            id: 1,
+            image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop',
+            title: 'Imagine de nouvelles idées',
+            description: 'Laisse libre cours à ton imagination dans nos ateliers d\'écriture créative'
+          },
+          {
+            id: 2,
+            image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop',
+            title: 'Laisse courir ton pinceau',
+            description: 'Découvre la peinture dans une ambiance détendue et bienveillante'
+          },
+          {
+            id: 3,
+            image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop',
+            title: 'Libère ta créativité',
+            description: 'Explore différentes techniques artistiques à ton rythme'
+          },
+          {
+            id: 4,
+            image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop',
+            title: 'Crée en communauté',
+            description: 'Partage tes créations et inspire-toi des autres dans nos ateliers collectifs'
+          }
+        ];
+        
+        const updatedMoments = [...defaultMoments];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const { data } = supabase.storage
@@ -66,7 +95,7 @@ export default function MomentsCreationSection() {
     };
 
     fetchImagesFromSupabase();
-  }, []);
+  }, []); // Suppression de la dépendance 'moments' pour éviter la boucle infinie
 
   return (
     <section className="py-24 bg-transparent px-6">

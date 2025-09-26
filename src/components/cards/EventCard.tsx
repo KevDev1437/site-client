@@ -23,7 +23,7 @@ interface EventCardProps {
 }
 
 export default function EventCard({ workshop }: EventCardProps) {
-  const { addItem } = useCart();
+  const { addToCart } = useCart();
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -122,7 +122,7 @@ export default function EventCard({ workshop }: EventCardProps) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  addItem({
+                  addToCart({
                     id: workshop.slug,
                     title: workshop.title,
                     price: workshop.price,

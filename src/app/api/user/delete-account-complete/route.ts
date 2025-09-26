@@ -1,10 +1,8 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextResponse } from 'next/server';
 
 export async function DELETE(req: Request) {
   try {
-    // Import dynamique pour éviter les problèmes de cache
-    const { supabaseAdmin } = await import('@/lib/supabase-admin');
-    
     if (!supabaseAdmin) {
       return NextResponse.json({ error: 'Configuration Supabase Admin manquante' }, { status: 500 });
     }
@@ -28,7 +26,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Utilisateur non authentifié' }, { status: 401 });
     }
 
-    console.log('🗑️ Suppression du compte utilisateur:', user.id);
+    console.log('🗑️ Suppression complète du compte utilisateur:', user.id);
 
     // Supprimer les données liées à l'utilisateur
     const { error: reservationsError } = await supabaseAdmin
@@ -58,7 +56,7 @@ export async function DELETE(req: Request) {
       console.error('❌ Erreur suppression profil:', profilesError);
     }
 
-    // Supprimer l'utilisateur de auth.users (nécessite les privilèges admin)
+    // Supprimer l'utilisateur de auth.users avec l'API Admin
     const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
     
     if (deleteUserError) {
@@ -82,4 +80,3 @@ export async function DELETE(req: Request) {
     }, { status: 500 });
   }
 }
-

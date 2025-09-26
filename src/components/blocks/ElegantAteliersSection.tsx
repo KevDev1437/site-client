@@ -4,18 +4,19 @@ import AtelierCard from '@/components/cards/AtelierCard';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { useAteliers } from '@/hooks/useAteliers';
 import { useCart } from '@/store/cart';
+import { Atelier } from '@/types/atelier';
 
 export default function ElegantAteliersSection() {
   const { ateliers, loading, error } = useAteliers();
   const { addToCart } = useCart();
 
-  const handleAddToCart = (atelier: any) => {
+  const handleAddToCart = (atelier: Atelier) => {
     addToCart({
       id: atelier.id,
       title: atelier.title,
       price: atelier.price,
       image_url: atelier.cover_url,
-      qty: 1
+      priceId: atelier.price_stripe_id
     });
   };
 

@@ -181,8 +181,9 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
         onClose();
       }, 1500);
 
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Une erreur est survenue' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue';
+      setMessage({ type: 'error', text: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -254,7 +255,7 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
                   />
                 </label>
               </div>
-              <p className="text-sm text-gray-500">Cliquez sur l'icône pour changer votre photo</p>
+              <p className="text-sm text-gray-500">Cliquez sur l&apos;icône pour changer votre photo</p>
             </div>
 
             {/* Nom complet */}

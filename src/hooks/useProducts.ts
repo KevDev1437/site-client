@@ -1,5 +1,6 @@
 'use client';
 
+import { mapSupabaseProduct } from '@/lib/product-utils';
 import { createClient } from '@/lib/supabase';
 import { Product } from '@/types/product';
 import { useEffect, useState } from 'react';
@@ -27,10 +28,11 @@ export function useProducts() {
           throw error;
         }
 
-        setProducts(data || []);
-      } catch (err: any) {
+        setProducts((data || []).map(mapSupabaseProduct));
+      } catch (err: unknown) {
         console.error('Erreur lors du chargement des produits:', err);
-        setError(err.message || 'Erreur lors du chargement des produits');
+        const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement des produits';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -66,10 +68,11 @@ export function useProduct(id: string) {
           throw error;
         }
 
-        setProduct(data);
-      } catch (err: any) {
+        setProduct(data ? mapSupabaseProduct(data) : null);
+      } catch (err: unknown) {
         console.error('Erreur lors du chargement du produit:', err);
-        setError(err.message || 'Produit introuvable');
+        const errorMessage = err instanceof Error ? err.message : 'Produit introuvable';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

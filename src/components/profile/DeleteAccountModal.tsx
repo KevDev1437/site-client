@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase';
 import { AlertTriangle, Eye, EyeOff, X } from 'lucide-react';
 import { useState } from 'react';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +50,7 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
         return;
       }
 
-      // Supprimer le compte via l'API route
+      // Supprimer le compte via l'API route avec suppression complète
       const { data: session } = await supabase.auth.getSession();
       if (!session?.session?.access_token) {
         setError('Session invalide');
@@ -56,7 +58,9 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
         return;
       }
 
-      const response = await fetch('/api/user/delete-account', {
+      console.log('🔍 Envoi de la requête de suppression avec token:', session.session.access_token ? 'Present' : 'Missing');
+      
+      const response = await fetch('/api/user/delete-account-complete', {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session.session.access_token}`,
@@ -64,17 +68,29 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
         }
       });
 
+      console.log('🔍 Réponse de l\'API:', response.status, response.statusText);
+      
       const result = await response.json();
+      console.log('🔍 Résultat de l\'API:', result);
 
       if (!response.ok) {
         setError(result.error || 'Erreur lors de la suppression du compte');
         setLoading(false);
-      } else {
-        alert('Compte supprimé avec succès');
-        // Se déconnecter et rediriger
+        return;
+      }
+
+      // Se déconnecter et rediriger
+      console.log('✅ Données utilisateur supprimées avec succès');
+      setLoading(false);
+      
+      // Afficher le message de confirmation
+      setShowConfirmation(true);
+      
+      // Se déconnecter et rediriger après 3 secondes
+      setTimeout(async () => {
         await supabase.auth.signOut();
         window.location.href = '/';
-      }
+      }, 3000);
     } catch (error) {
       console.error('Erreur:', error);
       setError('Erreur lors de la suppression du compte');
@@ -86,6 +102,7 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
     setPassword('');
     setConfirmation('');
     setError('');
+    setShowConfirmation(false);
     onClose();
   };
 
@@ -197,6 +214,12 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
           </div>
         </form>
       </div>
+      
+      {/* Message de confirmation de suppression */}
+      <DeleteConfirmationModal 
+        isOpen={showConfirmation} 
+        onClose={() => setShowConfirmation(false)} 
+      />
     </div>
   );
 }

@@ -1,14 +1,8 @@
+import { createClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 export async function DELETE(req: Request) {
   try {
-    // Import dynamique pour éviter les problèmes de cache
-    const { supabaseAdmin } = await import('@/lib/supabase-admin');
-    
-    if (!supabaseAdmin) {
-      return NextResponse.json({ error: 'Configuration Supabase Admin manquante' }, { status: 500 });
-    }
-    
     // Récupérer l'utilisateur depuis le token d'authentification
     const authHeader = req.headers.get('authorization');
     console.log('🔍 Auth header:', authHeader ? 'Present' : 'Missing');
@@ -21,8 +15,11 @@ export async function DELETE(req: Request) {
     const token = authHeader.replace('Bearer ', '');
     console.log('🔍 Token length:', token.length);
     
+    // Créer un client Supabase avec le token
+    const supabase = createClient();
+    
     // Vérifier l'authentification avec le token
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
       console.error('❌ Erreur d\'authentification:', authError);
       return NextResponse.json({ error: 'Utilisateur non authentifié' }, { status: 401 });
@@ -31,7 +28,7 @@ export async function DELETE(req: Request) {
     console.log('🗑️ Suppression du compte utilisateur:', user.id);
 
     // Supprimer les données liées à l'utilisateur
-    const { error: reservationsError } = await supabaseAdmin
+    const { error: reservationsError } = await supabase
       .from('reservations')
       .delete()
       .eq('user_id', user.id);
@@ -40,7 +37,7 @@ export async function DELETE(req: Request) {
       console.error('❌ Erreur suppression réservations:', reservationsError);
     }
 
-    const { error: ordersError } = await supabaseAdmin
+    const { error: ordersError } = await supabase
       .from('orders')
       .delete()
       .eq('user_id', user.id);
@@ -49,7 +46,7 @@ export async function DELETE(req: Request) {
       console.error('❌ Erreur suppression commandes:', ordersError);
     }
 
-    const { error: profilesError } = await supabaseAdmin
+    const { error: profilesError } = await supabase
       .from('profiles')
       .delete()
       .eq('id', user.id);
@@ -58,8 +55,8 @@ export async function DELETE(req: Request) {
       console.error('❌ Erreur suppression profil:', profilesError);
     }
 
-    // Supprimer l'utilisateur de auth.users (nécessite les privilèges admin)
-    const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
+    // Utiliser la fonction SQL pour supprimer l'utilisateur de auth.users
+    const { error: deleteUserError } = await supabase.rpc('delete_user_account');
     
     if (deleteUserError) {
       console.error('❌ Erreur suppression utilisateur:', deleteUserError);
@@ -82,4 +79,3 @@ export async function DELETE(req: Request) {
     }, { status: 500 });
   }
 }
-

@@ -16,7 +16,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // Créer le client Supabase seulement si les variables sont définies
 export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createSupabaseClient(supabaseUrl, supabaseAnonKey)
+  ? createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    })
   : null;
 
 // Export de la fonction createClient pour les composants client
@@ -24,5 +30,11 @@ export const createClient = () => {
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error('Variables d\'environnement Supabase manquantes');
   }
-  return createSupabaseClient(supabaseUrl, supabaseAnonKey);
+  return createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  });
 };

@@ -29,9 +29,10 @@ export function useAteliers() {
         }
 
         setAteliers(data || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Erreur lors du chargement des ateliers:', err);
-        setError(err.message || 'Erreur lors du chargement des ateliers');
+        const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement des ateliers';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

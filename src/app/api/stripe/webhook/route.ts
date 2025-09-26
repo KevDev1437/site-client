@@ -53,14 +53,22 @@ export async function POST(req: Request) {
     }
 
     try {
-      const { type, userId, userEmail, workshopId, productId } = session.metadata || {};
+      const { type, userId, workshopId, productId } = session.metadata || {};
       const amountTotal = session.amount_total || 0;
       const currency = session.currency || 'eur';
 
       console.log("🔍 Métadonnées session:", { type, userId, workshopId, productId, amountTotal });
 
       // Créer l'enregistrement dans orders
-      const orderData: any = {
+      const orderData: {
+        user_id: string;
+        stripe_session_id: string;
+        amount: number;
+        currency: string;
+        status: string;
+        workshop_id?: string;
+        product_id?: string;
+      } = {
         user_id: userId,
         stripe_session_id: session.id,
         amount: amountTotal,
@@ -89,7 +97,7 @@ export async function POST(req: Request) {
         }
 
         // Créer la commande
-        const { data: order, error: orderError } = await supabaseAdmin
+        const { error: orderError } = await supabaseAdmin
           .from('orders')
           .insert(orderData)
           .select()
@@ -147,7 +155,7 @@ export async function POST(req: Request) {
         }
 
         // Créer la commande
-        const { data: order, error: orderError } = await supabaseAdmin
+        const { error: orderError } = await supabaseAdmin
           .from('orders')
           .insert(orderData)
           .select()

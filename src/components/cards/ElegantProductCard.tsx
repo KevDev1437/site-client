@@ -1,4 +1,5 @@
 import UniversalImage from '@/components/ui/UniversalImage';
+import { isProductAvailable } from '@/lib/product-utils';
 import { Product } from '@/types/product';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
@@ -26,14 +27,14 @@ export default function ElegantProductCard({ product, onPurchase }: ElegantProdu
     }
   };
 
-  const isInStock = product.stock > 0;
+  const isAvailable = isProductAvailable(product);
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden h-[400px] flex flex-col group">
       {/* Image avec badge stock */}
       <div className="relative aspect-square overflow-hidden">
         <UniversalImage
-          src={product.image_url}
+          src={product.image_url ?? "/placeholder.png"}
           alt={product.title}
           width={300}
           height={300}
@@ -41,15 +42,15 @@ export default function ElegantProductCard({ product, onPurchase }: ElegantProdu
         />
         
         {/* Badge stock */}
-        {isInStock && (
+        {isAvailable && (
           <div className="absolute top-3 right-3 bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
             {product.stock} en stock
           </div>
         )}
         
-        {!isInStock && (
+        {!isAvailable && (
           <div className="absolute top-3 right-3 bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">
-            Épuisé
+            {product.stock === 0 ? 'Épuisé' : 'Indisponible'}
           </div>
         )}
       </div>
@@ -78,11 +79,11 @@ export default function ElegantProductCard({ product, onPurchase }: ElegantProdu
           {/* Bouton principal */}
           <button
             onClick={handlePurchase}
-            disabled={isPurchasing || !isInStock}
+            disabled={isPurchasing || !isAvailable}
             className="w-full bg-terracotta hover:bg-rose-poudre text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 flex items-center justify-center gap-2 text-sm"
           >
             <ShoppingCart className="w-4 h-4" />
-            {isPurchasing ? 'Redirection...' : !isInStock ? 'Épuisé' : 'Acheter maintenant'}
+            {isPurchasing ? 'Redirection...' : !isAvailable ? (product.stock === 0 ? 'Épuisé' : 'Indisponible') : 'Acheter maintenant'}
           </button>
           
           {/* Lien discret */}

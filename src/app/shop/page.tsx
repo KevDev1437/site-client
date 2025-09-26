@@ -129,7 +129,7 @@ export default function ShopPage() {
             {/* Product Image */}
             <div className="aspect-square overflow-hidden">
               <Image
-                src={product.image_url}
+                src={product.image_url ?? "/placeholder.png"}
                 alt={product.title}
                 width={400}
                 height={400}

@@ -4,7 +4,7 @@ import { useCart } from "@/store/cart";
 import Link from "next/link";
 
 export default function CartPage() {
-  const { items, removeItem, clear } = useCart();
+  const { items, removeFromCart, clearCart } = useCart();
 
   if (items.length === 0) {
     return (
@@ -33,7 +33,7 @@ export default function CartPage() {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-900">Votre panier</h1>
             <button
-              onClick={clear}
+              onClick={clearCart}
               className="text-red-600 hover:text-red-700 text-sm font-medium"
             >
               Vider le panier
@@ -50,7 +50,7 @@ export default function CartPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() => removeItem(item.id)}
+                  onClick={() => removeFromCart(item.id)}
                   className="text-red-600 hover:text-red-700 font-medium px-3 py-1 rounded hover:bg-red-50 transition"
                 >
                   Retirer

@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase';
 import { Edit, LogOut, Palette, ShoppingBag, Trash2, User } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface UserProfile {
   id: string;
@@ -19,6 +19,7 @@ interface Reservation {
   id: string;
   status: string;
   created_at: string;
+  stripe_session_id?: string;
   workshop: {
     id: string;
     title: string;
@@ -31,21 +32,15 @@ interface Reservation {
 
 interface Order {
   id: string;
+  user_id: string;
+  stripe_session_id: string;
   amount: number;
   currency: string;
-  status: string;
+  status: 'pending' | 'paid' | 'failed' | 'cancelled';
   created_at: string;
-  workshop?: {
-    id: string;
-    title: string;
-    cover_url: string;
-  };
-  product?: {
-    id: string;
-    title: string;
-    image_url: string;
-    price: number;
-  };
+  updated_at: string;
+  workshop?: { title: string; date: string } | null;
+  product?: { title: string; price: number } | null;
 }
 
 export default function ProfilePage() {
@@ -56,13 +51,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  useEffect(() => {
-    if (user && loading) {
-      fetchUserData();
-    }
-  }, [user?.id]); // Seulement quand l'ID utilisateur change
-
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -104,11 +93,11 @@ export default function ProfilePage() {
         setReservations(reservationsData || []);
       }
 
-      // Récupérer les commandes (requête simplifiée)
+      // Récupérer les commandes avec les relations
       console.log('🔍 Recherche des commandes...');
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
-        .select('*')
+        .select('*, workshop:workshops(title, date), product:products(title, price)')
         .eq('user_id', user.id);
 
       if (ordersError) {
@@ -123,16 +112,13 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  useEffect(() => {
+    if (user && loading) {
+      fetchUserData();
+    }
+  }, [user, loading, fetchUserData]); // Seulement quand l'ID utilisateur change
 
   const formatAmount = (amount: number, currency: string) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -189,7 +175,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8ecdd] py-8">
+    <div className="min-h-screen bg-[#f8ecdd] pt-28 pb-8">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
@@ -305,7 +291,7 @@ export default function ProfilePage() {
                           Réservation #{reservation.id.slice(0, 8)}
                         </h3>
                         <p className="text-xs text-gray-600 font-sans mb-1">
-                          ID Atelier: {reservation.workshop_id}
+                          ID Atelier: {reservation.workshop.id}
                         </p>
                         <p className="text-xs text-gray-600 font-sans mb-2">
                           Session: {reservation.stripe_session_id?.slice(0, 20)}...
@@ -364,7 +350,7 @@ export default function ProfilePage() {
                     <div className="flex gap-4">
                       <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
                         <span className="text-2xl">
-                          {order.workshop_id ? '🎨' : '🛍️'}
+                          {order.workshop ? '🎨' : '🛍️'}
                         </span>
                       </div>
                       <div className="flex-1 min-w-0">
@@ -374,14 +360,19 @@ export default function ProfilePage() {
                         <p className="text-xs text-gray-600 font-sans mb-1">
                           💰 {formatAmount(order.amount, order.currency)}
                         </p>
-                        {order.workshop_id && (
+                        {order.workshop && (
                           <p className="text-xs text-gray-500 font-sans mb-1">
-                            🎨 Atelier: {order.workshop_id}
+                            🎨 Atelier: {order.workshop.title}
                           </p>
                         )}
-                        {order.product_id && (
+                        {order.product && (
                           <p className="text-xs text-gray-500 font-sans mb-1">
-                            🛍️ Produit: {order.product_id}
+                            🛒 Produit: {order.product.title}
+                          </p>
+                        )}
+                        {!order.workshop && !order.product && (
+                          <p className="text-xs text-gray-500 font-sans mb-1">
+                            📦 Commande générale
                           </p>
                         )}
                         <p className="text-xs text-gray-500 font-sans mb-2">

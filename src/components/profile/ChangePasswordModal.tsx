@@ -91,8 +91,9 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
         onClose();
       }, 1500);
 
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Une erreur est survenue' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue';
+      setMessage({ type: 'error', text: errorMessage });
     } finally {
       setLoading(false);
     }

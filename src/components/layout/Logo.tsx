@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 
 export default function Logo() {
   const [logoSrc, setLogoSrc] = useState<string>('https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=200&h=80&fit=crop'); // Image par défaut
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLogoFromSupabase = async () => {
@@ -24,8 +23,6 @@ export default function Logo() {
       } catch (error) {
         console.warn('Erreur lors du chargement du logo depuis Supabase:', error);
         // En cas d'erreur, on garde l'image par défaut
-      } finally {
-        setLoading(false);
       }
     };
 
