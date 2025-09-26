@@ -5,6 +5,7 @@ import ContactTiles from '@/components/blocks/ContactTiles';
 import CreeTonMomentSection from '@/components/blocks/CreeTonMomentSection';
 import EventsGrid from '@/components/blocks/EventsGrid';
 import FounderIntro from '@/components/blocks/FounderIntro';
+import MomentsCreationSection from '@/components/blocks/MomentsCreationSection';
 import PhotoMosaic from '@/components/blocks/PhotoMosaic';
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
@@ -34,92 +35,7 @@ export default function Home() {
       </section>
 
       {/* Section "Moments de création" */}
-      <section className="py-24 bg-beige-tres-clair px-6">
-        <div className="max-w-7xl mx-auto px-6">
-          <SectionTitle 
-            title="Moments de création"
-            subtitle="Plonge dans l'ambiance chaleureuse de nos ateliers créatifs"
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Carte 1: Imagine de nouvelles idées */}
-            <div className="text-center group">
-              <div className="aspect-square rounded-2xl overflow-hidden mb-6 card-elegant">
-                <Image
-                  src="/image1.jpg"
-                  alt="Carnet et stylos créatifs"
-                  width={600}
-                  height={600}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
-                />
-              </div>
-              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
-                Imagine de nouvelles idées
-              </h3>
-              <p className="font-sans text-base text-gray-600 leading-relaxed">
-                Laisse libre cours à ton imagination dans nos ateliers d&apos;écriture créative
-              </p>
-            </div>
-
-            {/* Carte 2: Laisse courir ton pinceau */}
-            <div className="text-center group">
-              <div className="aspect-square rounded-2xl overflow-hidden mb-6 card-elegant">
-                <Image
-                  src="/image2.jpg"
-                  alt="Atelier peinture et café"
-                  width={600}
-                  height={600}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
-                />
-              </div>
-              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
-                Laisse courir ton pinceau
-              </h3>
-              <p className="font-sans text-base text-gray-600 leading-relaxed">
-                Découvre la peinture dans une ambiance détendue et bienveillante
-              </p>
-            </div>
-
-            {/* Carte 3: Libère ta créativité */}
-            <div className="text-center group">
-              <div className="aspect-square rounded-2xl overflow-hidden mb-6 card-elegant">
-                <Image
-                  src="/image3.jpg"
-                  alt="Personne en train de créer"
-                  width={600}
-                  height={600}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
-                />
-              </div>
-              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
-                Libère ta créativité
-              </h3>
-              <p className="font-sans text-base text-gray-600 leading-relaxed">
-                Explore différentes techniques artistiques à ton rythme
-              </p>
-            </div>
-
-            {/* Carte 4: Nouvelle carte */}
-            <div className="text-center group">
-              <div className="aspect-square rounded-2xl overflow-hidden mb-6 card-elegant">
-                <Image
-                  src="/image4.jpg"
-                  alt="Atelier créatif"
-                  width={600}
-                  height={600}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400"
-                />
-              </div>
-              <h3 className="font-sans text-sm italic text-gray-500 mb-4">
-                Crée en communauté
-              </h3>
-              <p className="font-sans text-base text-gray-600 leading-relaxed">
-                Partage tes créations et inspire-toi des autres dans nos ateliers collectifs
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <MomentsCreationSection />
 
       {/* Section "Crée ton moment" - Diviseur */}
       <CreeTonMomentSection />
