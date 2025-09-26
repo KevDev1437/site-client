@@ -81,10 +81,10 @@ export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProp
         {/* Mobile - Version simplifiée pour le header */}
         <button 
           onClick={onLogin}
-          className="lg:hidden flex items-center gap-2 px-2 py-2 text-gris-doux hover:text-dore transition-colors duration-300"
+          className="lg:hidden flex items-center gap-1 sm:gap-2 px-1 sm:px-2 py-1 sm:py-2 text-gris-doux hover:text-dore transition-colors duration-300"
         >
-          <User className="w-5 h-5" />
-          <span className="text-sm">Se connecter</span>
+          <User className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-xs sm:text-sm hidden sm:inline">Se connecter</span>
         </button>
       </>
     );
@@ -142,9 +142,9 @@ export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProp
       <div className="relative lg:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-2 py-2 text-gris-doux hover:text-dore transition-colors duration-300"
+          className="flex items-center gap-1 sm:gap-2 px-1 sm:px-2 py-1 sm:py-2 text-gris-doux hover:text-dore transition-colors duration-300"
         >
-          <User className="w-5 h-5" />
+          <User className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
         {isOpen && (

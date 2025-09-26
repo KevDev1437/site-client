@@ -35,7 +35,7 @@ export default function Logo() {
       alt="Yapha Creative Studio"
       width={200}
       height={80}
-      className="h-12 lg:h-20 w-auto object-contain"
+      className="h-8 sm:h-10 lg:h-20 w-auto object-contain"
       style={{ width: "auto", height: "auto" }}
       priority
     />

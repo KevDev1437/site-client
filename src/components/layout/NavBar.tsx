@@ -65,7 +65,7 @@ export default function Header() {
     }`}>
       <nav className="relative mx-auto max-w-7xl px-4 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
-        <div className="flex items-center justify-between h-20 lg:h-28 pt-4 lg:pt-8">
+        <div className="flex items-center justify-between h-16 sm:h-18 lg:h-28 pt-3 sm:pt-4 lg:pt-8">
           {/* Espace vide à gauche pour équilibrer - Desktop seulement */}
           <div className="hidden lg:block w-32"></div>
           
@@ -77,7 +77,7 @@ export default function Header() {
           </div>
 
           {/* Actions droite */}
-          <div className="flex items-center gap-2 lg:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-4">
             {/* Menu utilisateur ou bouton connexion - Desktop seulement */}
             <div className="hidden lg:block">
               <UserMenu onLogin={openAuthModal} />
@@ -91,9 +91,9 @@ export default function Header() {
             {/* Panier avec compteur */}
             <Link 
               href="/cart" 
-              className="relative p-2 text-gris-doux hover:text-dore transition-colors duration-300"
+              className="relative p-1 sm:p-2 text-gris-doux hover:text-dore transition-colors duration-300"
             >
-              <ShoppingCart className="w-6 h-6" />
+              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
               {totalQty > 0 && (
                 <span className="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full bg-dore text-white text-xs font-medium px-2 py-0.5 min-w-[20px] h-[20px]">
                   {totalQty}
@@ -103,11 +103,11 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden p-2 text-gris-doux hover:text-dore transition-colors duration-300 flex items-center justify-center"
+              className="lg:hidden p-1 sm:p-2 text-gris-doux hover:text-dore transition-colors duration-300 flex items-center justify-center"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>
