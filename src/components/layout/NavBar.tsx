@@ -63,11 +63,11 @@ export default function Header() {
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled ? 'shadow-lg backdrop-blur-md bg-blanc-creme/95' : 'backdrop-blur-sm bg-beige/80'
     }`}>
-<nav className="relative mx-auto max-w-7xl px-6 lg:px-8">
+      <nav className="relative mx-auto max-w-7xl px-4 lg:px-8">
         {/* Ligne du haut - Logo centré + Actions droite */}
-        <div className="flex items-center justify-between h-28 pt-8">
-          {/* Espace vide à gauche pour équilibrer */}
-          <div className="w-32"></div>
+        <div className="flex items-center justify-between h-20 lg:h-28 pt-4 lg:pt-8">
+          {/* Espace vide à gauche pour équilibrer - Desktop seulement */}
+          <div className="hidden lg:block w-32"></div>
           
           {/* Logo centré */}
           <div className="flex-shrink-0">
@@ -77,7 +77,7 @@ export default function Header() {
           </div>
 
           {/* Actions droite */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 lg:gap-4">
             {/* Menu utilisateur ou bouton connexion - Desktop seulement */}
             <div className="hidden lg:block">
               <UserMenu onLogin={openAuthModal} />
@@ -103,7 +103,7 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden p-2 text-gris-doux hover:text-dore transition-colors duration-300"
+              className="lg:hidden p-2 text-gris-doux hover:text-dore transition-colors duration-300 flex items-center justify-center"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Menu"
             >
