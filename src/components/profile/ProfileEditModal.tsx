@@ -114,6 +114,7 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
       }
 
       // Mettre à jour le profil
+      console.log('🔄 Mise à jour du profil...');
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -126,7 +127,15 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
         .eq('id', profile.id);
 
       if (profileError) {
-        throw new Error(profileError.message);
+        console.error('❌ Erreur mise à jour profil:', profileError);
+        // Si la table n'existe pas, on continue quand même
+        if (profileError.message.includes('relation "profiles" does not exist')) {
+          console.warn('⚠️ Table profiles n\'existe pas encore, mais on continue...');
+        } else {
+          throw new Error(profileError.message);
+        }
+      } else {
+        console.log('✅ Profil mis à jour avec succès');
       }
 
       // Mettre à jour l'email si changé

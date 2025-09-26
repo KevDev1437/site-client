@@ -538,14 +538,21 @@ export default function ProfilePage() {
       </div>
 
       {/* Modals */}
-      {profile && user && (
+      {user && (
         <ProfileEditModal
           isOpen={showEditModal}
           onClose={() => {
             console.log('🔍 Fermeture du modal');
             setShowEditModal(false);
           }}
-          profile={profile}
+          profile={profile || {
+            id: user.id || '',
+            full_name: null,
+            bio: null,
+            avatar_url: null,
+            phone: null,
+            created_at: new Date().toISOString()
+          }}
           user={user}
           onUpdate={handleProfileUpdate}
         />
