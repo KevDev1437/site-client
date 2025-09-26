@@ -92,3 +92,4 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION delete_user_account_admin() TO authenticated;
+

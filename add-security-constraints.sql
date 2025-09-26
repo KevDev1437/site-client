@@ -71,3 +71,4 @@ CREATE TRIGGER decrement_workshop_seats_trigger
   AFTER UPDATE ON reservations
   FOR EACH ROW
   EXECUTE FUNCTION decrement_workshop_seats();
+

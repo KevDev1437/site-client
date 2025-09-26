@@ -23,3 +23,4 @@ WHERE id = 'f3171972-c5ca-43c0-ad4f-cd20f4c0ccff';
 
 -- Vérification des mises à jour
 SELECT id, title, cover_url FROM workshops ORDER BY created_at;
+

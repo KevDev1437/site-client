@@ -53,3 +53,4 @@ CREATE POLICY "Users can insert their own purchases" ON purchases
 
 CREATE POLICY "Users can update their own purchases" ON purchases
   FOR UPDATE USING (auth.uid() = user_id);
+

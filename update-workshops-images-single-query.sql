@@ -12,3 +12,4 @@ END;
 
 -- Vérification des mises à jour
 SELECT id, title, cover_url FROM workshops ORDER BY created_at;
+

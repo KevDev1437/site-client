@@ -31,3 +31,4 @@ SELECT id, title, seats FROM workshops LIMIT 5;
 -- Vérifier les products
 SELECT COUNT(*) as total_products FROM products;
 SELECT id, title, stock FROM products LIMIT 5;
+

@@ -44,3 +44,4 @@ Vérifier que les images s'affichent correctement sur :
 - Page d'accueil (section ateliers)
 - Page `/workshops`
 - Pages ateliers individuelles
+
