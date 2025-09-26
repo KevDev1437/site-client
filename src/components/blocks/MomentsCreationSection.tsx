@@ -69,7 +69,7 @@ export default function MomentsCreationSection() {
   }, []);
 
   return (
-    <section className="py-24 bg-beige-tres-clair px-6">
+    <section className="py-24 bg-transparent px-6">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <h2 className="font-serif text-4xl font-bold text-gray-900 mb-6">
