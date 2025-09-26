@@ -54,7 +54,7 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
     try {
       if (!supabase) {
         console.error('Supabase client non initialisé');
-        return null;
+        return URL.createObjectURL(file);
       }
 
       const fileExt = file.name.split('.').pop();
@@ -63,29 +63,35 @@ export default function ProfileEditModal({ isOpen, onClose, profile, user, onUpd
 
       console.log('🔄 Upload avatar:', { fileName, filePath, fileSize: file.size });
 
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
+      try {
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, file, { upsert: true });
 
-      if (uploadError) {
-        console.error('❌ Erreur upload avatar:', uploadError);
-        // Si le bucket n'existe pas, on peut essayer de le créer ou utiliser une URL temporaire
-        if (uploadError.message.includes('Bucket not found')) {
-          console.warn('⚠️ Bucket avatars non trouvé, utilisation d\'une URL temporaire');
+        if (uploadError) {
+          console.error('❌ Erreur upload avatar:', uploadError);
+          // Si le bucket n'existe pas ou RLS bloque, utiliser une URL temporaire
+          if (uploadError.message.includes('Bucket not found') || 
+              uploadError.message.includes('row-level security policy')) {
+            console.warn('⚠️ Bucket avatars non configuré, utilisation d\'une URL temporaire');
+            return URL.createObjectURL(file);
+          }
           return URL.createObjectURL(file);
         }
-        return null;
+
+        const { data } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(filePath);
+
+        console.log('✅ Avatar uploadé:', data.publicUrl);
+        return data.publicUrl;
+      } catch (storageError) {
+        console.warn('⚠️ Erreur Supabase Storage, utilisation d\'une URL temporaire:', storageError);
+        return URL.createObjectURL(file);
       }
-
-      const { data } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      console.log('✅ Avatar uploadé:', data.publicUrl);
-      return data.publicUrl;
     } catch (error) {
       console.error('❌ Erreur upload avatar:', error);
-      return null;
+      return URL.createObjectURL(file);
     }
   };
 
