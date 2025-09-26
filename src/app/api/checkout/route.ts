@@ -24,8 +24,10 @@ export async function POST(req: Request) {
     productName = parsed.productName;
     productPrice = parsed.productPrice;
     productId = parsed.productId;
+    const successUrl = parsed.successUrl;
+    const cancelUrl = parsed.cancelUrl;
     
-    console.log("📋 Parsed data:", { priceId, workshopSlug, lineItems, productName, productPrice, productId });
+    console.log("📋 Parsed data:", { priceId, workshopSlug, lineItems, productName, productPrice, productId, successUrl, cancelUrl });
   } catch (error) {
     console.error("❌ JSON parsing error:", error);
     return new Response(JSON.stringify({ error: "Invalid JSON" }), { 
@@ -101,12 +103,18 @@ export async function POST(req: Request) {
     }
     console.log("🌐 Base URL:", baseUrl);
     
+    // Déterminer les URLs de retour
+    const finalSuccessUrl = successUrl || `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`;
+    const finalCancelUrl = cancelUrl || `${baseUrl}/cancel`;
+    
+    console.log("🔗 URLs de retour:", { success: finalSuccessUrl, cancel: finalCancelUrl });
+
     // Mode payment pour achats uniques
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: sessionLineItems,
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/cancel`,
+      success_url: finalSuccessUrl,
+      cancel_url: finalCancelUrl,
       payment_method_types: ["card", "bancontact", "sepa_debit"],
       metadata,
       // Configuration pour éviter les erreurs de sécurité

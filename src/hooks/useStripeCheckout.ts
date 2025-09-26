@@ -20,6 +20,9 @@ export function useStripeCheckout() {
           productName: product.title,
           productPrice: product.price,
           productId: product.id,
+          // Ajouter l'URL de retour vers la boutique
+          successUrl: `${window.location.origin}/boutique?success=true`,
+          cancelUrl: `${window.location.origin}/boutique?canceled=true`,
         }),
       });
 

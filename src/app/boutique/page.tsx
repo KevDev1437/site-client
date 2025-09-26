@@ -4,10 +4,31 @@ import ProductCard from '@/components/cards/ProductCard';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { useProducts } from '@/hooks/useProducts';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export default function BoutiquePage() {
   const { products, loading, error } = useProducts();
   const { handlePurchase } = useStripeCheckout();
+  const searchParams = useSearchParams();
+  const [showMessage, setShowMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
+    
+    if (success === 'true') {
+      setShowMessage('✅ Achat confirmé ! Merci pour votre commande.');
+    } else if (canceled === 'true') {
+      setShowMessage('ℹ️ Achat annulé. Vous pouvez continuer vos achats.');
+    }
+    
+    // Masquer le message après 5 secondes
+    if (showMessage) {
+      const timer = setTimeout(() => setShowMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams, showMessage]);
 
   if (loading) {
     return (
@@ -37,6 +58,13 @@ export default function BoutiquePage() {
   return (
     <div className="min-h-screen bg-beige-fonce py-24 px-6">
       <div className="max-w-7xl mx-auto px-6">
+        {/* Message de confirmation/annulation */}
+        {showMessage && (
+          <div className="mb-8 p-4 rounded-lg bg-green-50 border border-green-200 text-green-800 text-center">
+            {showMessage}
+          </div>
+        )}
+        
         <SectionTitle 
           title="Notre Boutique"
           subtitle="Découvrez notre sélection de matériel créatif de qualité et d'œuvres d'art uniques"
