@@ -3,9 +3,11 @@
 import ProductCard from '@/components/cards/ProductCard';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { useProducts } from '@/hooks/useProducts';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 
 export default function BoutiquePage() {
   const { products, loading, error } = useProducts();
+  const { handlePurchase } = useStripeCheckout();
 
   if (loading) {
     return (
@@ -49,10 +51,29 @@ export default function BoutiquePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} showDescription={true} />
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                showDescription={true}
+                onPurchase={handlePurchase}
+              />
             ))}
           </div>
         )}
+
+        {/* Information sur la sécurité des paiements */}
+        <div className="mt-16 text-center">
+          <div className="bg-rose border border-dore/20 rounded-xl p-8 max-w-2xl mx-auto">
+            <div className="text-dore text-4xl mb-4">🛒</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2 font-serif">
+              Paiement sécurisé
+            </h3>
+            <p className="text-gris-doux">
+              Tous nos paiements sont sécurisés par Stripe. Vous recevrez un email de confirmation 
+              après votre achat.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

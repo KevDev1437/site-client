@@ -4,9 +4,11 @@ import ProductCard from '@/components/cards/ProductCard';
 import Button from '@/components/ui/Button';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { useProducts } from '@/hooks/useProducts';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 
 export default function BoutiqueSection() {
   const { products, loading, error } = useProducts();
+  const { handlePurchase } = useStripeCheckout();
 
   if (loading) {
     return (
@@ -46,7 +48,11 @@ export default function BoutiqueSection() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              onPurchase={handlePurchase}
+            />
           ))}
         </div>
 

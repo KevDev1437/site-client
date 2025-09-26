@@ -1,6 +1,7 @@
 'use client';
 
 import { useProduct } from '@/hooks/useProducts';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,6 +11,7 @@ export default function ProductPage() {
   const params = useParams();
   const productId = params.id as string;
   const { product, loading, error } = useProduct(productId);
+  const { handlePurchase, loading: isPurchasing } = useStripeCheckout();
 
   if (loading) {
     return (
@@ -95,9 +97,13 @@ export default function ProductPage() {
 
             {/* Bouton d'achat */}
             <div className="pt-6">
-              <button className="w-full bg-terracotta hover:bg-rose-poudre text-white font-medium py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-3">
+              <button 
+                onClick={() => product && handlePurchase(product)}
+                disabled={isPurchasing === product?.id}
+                className="w-full bg-terracotta hover:bg-rose-poudre text-white font-medium py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <ShoppingCart className="w-5 h-5" />
-                Acheter maintenant
+                {isPurchasing === product?.id ? 'Redirection...' : 'Acheter maintenant'}
               </button>
               <p className="font-sans text-sm text-gray-500 mt-3 text-center">
                 Paiement sécurisé avec Stripe
