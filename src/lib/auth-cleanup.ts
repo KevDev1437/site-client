@@ -117,7 +117,7 @@ export function initializeAuthCleanupWithCleanup(): () => void {
   window.addEventListener('online', handleOnline);
   
   // Retourner une fonction de nettoyage pour React
-  return (): void => {
+  return () => {
     clearInterval(cleanupInterval);
     window.removeEventListener('beforeunload', handleBeforeUnload);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
