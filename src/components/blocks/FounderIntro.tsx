@@ -1,7 +1,41 @@
+'use client';
+
 import Button from '@/components/ui/Button';
+import { createClient } from '@/lib/supabase';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export default function FounderIntro() {
+  const [julieImageSrc, setJulieImageSrc] = useState<string>('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=600&fit=crop'); // Image par défaut
+
+  useEffect(() => {
+    const fetchJulieImageFromSupabase = async () => {
+      try {
+        const supabase = createClient();
+        
+        console.log('👩 Tentative de récupération de l\'image de Julie depuis Supabase...');
+        
+        // Récupérer l'URL publique de l'image de Julie depuis Supabase Storage
+        const { data } = supabase.storage
+          .from('images') // Nom du bucket dans Supabase Storage
+          .getPublicUrl('julie.jpg'); // Nom du fichier image dans le bucket
+
+        console.log('👩 URL récupérée:', data?.publicUrl);
+
+        if (data?.publicUrl) {
+          setJulieImageSrc(data.publicUrl);
+          console.log('✅ Image de Julie configurée:', data.publicUrl);
+        } else {
+          console.warn('⚠️ Aucune URL d\'image de Julie trouvée');
+        }
+      } catch (error) {
+        console.error('❌ Erreur lors du chargement de l\'image de Julie depuis Supabase:', error);
+        // En cas d'erreur, on garde l'image par défaut
+      }
+    };
+
+    fetchJulieImageFromSupabase();
+  }, []);
   return (
     <section className="py-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -57,13 +91,13 @@ export default function FounderIntro() {
 
         {/* Right side - Portrait */}
         <div className="relative">
-          <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+          <div className="rounded-2xl overflow-hidden shadow-2xl">
             <Image
-              src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=600&fit=crop"
+              src={julieImageSrc}
               alt="Julie - Fondatrice de Yapha Creative Studio"
               width={600}
               height={600}
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-cover"
             />
           </div>
           
