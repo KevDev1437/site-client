@@ -20,9 +20,35 @@ export default function Header() {
       setIsScrolled(window.scrollY > 0);
     };
 
+    const handleResize = () => {
+      // Fermer le menu mobile si on passe en desktop
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
+
+  // Empêcher le scroll du body quand le menu mobile est ouvert
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Nettoyer au démontage
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   // Navigation links
   const navLinks = [
@@ -107,12 +133,12 @@ export default function Header() {
           <div className="lg:hidden">
             {/* Overlay */}
             <div 
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60]"
               onClick={() => setIsMobileMenuOpen(false)}
             ></div>
             
             {/* Mobile Menu */}
-            <div className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-xl border-t border-white/30 z-50">
+            <div className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-xl border-t border-white/30 z-[70] animate-in slide-in-from-top-2 duration-200">
               <div className="px-6 py-8 space-y-6">
                 {/* Logo mobile */}
                 <div className="text-center pb-6 border-b border-gray-300">

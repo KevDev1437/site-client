@@ -106,12 +106,12 @@ export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProp
           <>
             {/* Overlay */}
             <div 
-              className="fixed inset-0 z-40"
+              className="fixed inset-0 z-[80]"
               onClick={() => setIsOpen(false)}
             />
             
             {/* Menu déroulant */}
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-[90]">
               <div className="px-4 py-2 border-b border-gray-100">
                 <p className="text-sm font-medium text-gray-900">{user.email}</p>
                 <p className="text-xs text-gray-500">Connecté</p>
@@ -151,12 +151,12 @@ export default function UserMenu({ onLogin, isMobileMenu = false }: UserMenuProp
           <>
             {/* Overlay */}
             <div 
-              className="fixed inset-0 z-40"
+              className="fixed inset-0 z-[80]"
               onClick={() => setIsOpen(false)}
             />
             
             {/* Menu déroulant mobile - Position fixe pour éviter les problèmes de scroll */}
-            <div className="fixed right-4 top-20 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+            <div className="fixed right-4 top-20 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-[90]">
               <div className="px-4 py-2 border-b border-gray-100">
                 <p className="text-sm font-medium text-gray-900">{user.email}</p>
                 <p className="text-xs text-gray-500">Connecté</p>
