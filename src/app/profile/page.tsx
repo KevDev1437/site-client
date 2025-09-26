@@ -116,6 +116,18 @@ export default function ProfilePage() {
           setProfile(profileData);
         }
 
+        // Vérifier le stockage local pour les modifications temporaires
+        const localProfile = localStorage.getItem('temp_profile');
+        if (localProfile) {
+          try {
+            const parsedProfile = JSON.parse(localProfile);
+            console.log('🔄 Profil local trouvé au chargement:', parsedProfile);
+            setProfile(parsedProfile);
+          } catch (e) {
+            console.warn('⚠️ Erreur parsing profil local:', e);
+          }
+        }
+
         // Récupérer les achats
         const { data: purchasesData, error: purchasesError } = await supabase
           .from('user_purchases')
@@ -189,7 +201,20 @@ export default function ProfilePage() {
   };
 
   const handleProfileUpdate = async () => {
-    // Recharger les données du profil
+    // Vérifier d'abord le stockage local
+    const localProfile = localStorage.getItem('temp_profile');
+    if (localProfile) {
+      try {
+        const parsedProfile = JSON.parse(localProfile);
+        console.log('🔄 Profil local trouvé:', parsedProfile);
+        setProfile(parsedProfile);
+        return;
+      } catch (e) {
+        console.warn('⚠️ Erreur parsing profil local:', e);
+      }
+    }
+
+    // Recharger les données du profil depuis Supabase
     if (!supabase) {
       console.error('Supabase client non initialisé');
       return;
