@@ -52,20 +52,42 @@ export default function DeleteAccountModal({ isOpen, onClose, userEmail }: Delet
         throw new Error('Mot de passe incorrect');
       }
 
-      // 2. Supprimer le compte utilisateur avec la fonction corrigée
-      const { error } = await supabase.rpc('delete_user_corrected');
-
-      if (error) {
-        throw new Error(error.message);
+      // 2. Supprimer manuellement les données liées
+      const currentUserId = (await supabase.auth.getUser()).data.user?.id;
+      
+      if (!currentUserId) {
+        throw new Error('Utilisateur non trouvé');
       }
+
+      // Supprimer les données dans l'ordre
+      await supabase.from('workshop_bookings').delete().eq('user_id', currentUserId);
+      await supabase.from('user_purchases').delete().eq('user_id', currentUserId);
+      await supabase.from('profiles').delete().eq('id', currentUserId);
+      
+      // Supprimer l'avatar du storage si existe
+      try {
+        const { data: files } = await supabase.storage.from('avatars').list('', {
+          search: currentUserId
+        });
+        
+        if (files && files.length > 0) {
+          const filePaths = files.map(file => `${currentUserId}/${file.name}`);
+          await supabase.storage.from('avatars').remove(filePaths);
+        }
+      } catch (storageError) {
+        console.warn('Erreur suppression avatar:', storageError);
+      }
+
+      // 3. Déconnexion finale
+      await supabase.auth.signOut();
 
       setMessage({ type: 'success', text: 'Compte supprimé avec succès. Redirection...' });
       
-      // Rediriger vers la page d'accueil après 2 secondes
+      // Rediriger immédiatement vers la page d'accueil
       setTimeout(() => {
-        router.push('/');
-        window.location.reload();
-      }, 2000);
+        // Forcer la redirection et le rechargement
+        window.location.href = '/';
+      }, 1500);
 
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Une erreur est survenue lors de la suppression' });
