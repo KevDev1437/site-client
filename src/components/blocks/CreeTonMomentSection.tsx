@@ -46,7 +46,7 @@ export default function CreeTonMomentSection() {
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/cree-ton-moment.jpg')`,
+            backgroundImage: `url('https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=1920&h=1080&fit=crop')`,
           }}
         />
       </video>

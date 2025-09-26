@@ -39,6 +39,7 @@ export default function Logo() {
       width={200}
       height={80}
       className="h-20 w-auto object-contain"
+      style={{ width: "auto", height: "auto" }}
       priority
     />
   );
