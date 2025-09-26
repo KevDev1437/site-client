@@ -2,9 +2,9 @@
 
 import { useAuthModal } from '@/components/auth/AuthProvider';
 import UserMenu from '@/components/auth/UserMenu';
+import Logo from '@/components/layout/Logo';
 import { useCart } from '@/store/cart';
 import { Menu, ShoppingCart, X } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -46,14 +46,7 @@ export default function Header() {
           {/* Logo centré */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center group">
-              <Image
-                src="/logo.png"
-                alt="Yapha Creative Studio"
-                width={900}
-                height={300}
-                className="h-50 w-auto group-hover:scale-110 transition-all duration-300 ease-in-out"
-                priority
-              />
+              <Logo />
             </Link>
           </div>
 
@@ -123,18 +116,12 @@ export default function Header() {
               <div className="px-6 py-8 space-y-6">
                 {/* Logo mobile */}
                 <div className="text-center pb-6 border-b border-gray-300">
-                  <Link 
+                  <Link
                     href="/" 
                     className="inline-block"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Image
-                      src="/logo.png"
-                      alt="Yapha Creative Studio"
-                      width={600}
-                      height={180}
-                      className="h-40 w-auto mx-auto hover:scale-110 transition-all duration-300 ease-in-out"
-                    />
+                    <Logo />
                   </Link>
                 </div>
 
