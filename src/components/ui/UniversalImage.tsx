@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useState } from 'react';
 
 interface UniversalImageProps {
@@ -29,15 +28,14 @@ export default function UniversalImage({
   };
 
   return (
-    <Image
+    <img
       src={currentSrc}
       alt={alt}
       width={width}
       height={height}
       className={className}
       onError={handleError}
-      unoptimized={true}
-      priority={false}
+      loading="lazy"
     />
   );
 }
