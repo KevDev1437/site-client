@@ -121,12 +121,23 @@ export default function Home() {
       </section>
 
       {/* Section "Crée ton moment" - Diviseur */}
-      <section className="relative py-32 bg-terracotta-pastel px-6">
+      <section 
+        className="relative py-32 px-6"
+        style={{
+          backgroundImage: 'url(/cree-ton-moment.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* Overlay pour améliorer la lisibilité du texte */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        
         <div className="relative z-10 text-center">
-          <h2 className="font-serif text-4xl font-medium text-gray-900 text-center tracking-wide">
+          <h2 className="font-serif text-4xl font-medium text-white text-center tracking-wide drop-shadow-lg">
             Crée ton moment 🕯
           </h2>
-          <p className="font-sans text-base text-gray-600 mt-2 max-w-2xl mx-auto">
+          <p className="font-sans text-base text-white mt-2 max-w-2xl mx-auto drop-shadow-md">
             Accorde-toi une pause, respire, et laisse émerger ton univers intérieur
           </p>
         </div>
@@ -226,22 +237,22 @@ export default function Home() {
 
       {/* Section Ateliers (EventsGrid intégré) */}
       <section id="events" className="py-24 bg-boutique px-6">
-        <EventsGrid />
+      <EventsGrid />
       </section>
 
       {/* Section Galerie (PhotoMosaic intégré) */}
       <section className="py-24 bg-beige-tres-clair px-6">
-        <PhotoMosaic />
+      <PhotoMosaic />
       </section>
 
       {/* Section Fondatrice (FounderIntro intégré) */}
       <section className="py-24 bg-rose-poudre px-6">
-        <FounderIntro />
+      <FounderIntro />
       </section>
 
       {/* Section Contact (ContactTiles intégré) */}
       <section className="py-24 bg-beige-fonce px-6">
-        <ContactTiles />
+      <ContactTiles />
       </section>
     </div>
   );
