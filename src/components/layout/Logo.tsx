@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function Logo() {
-  const [logoSrc, setLogoSrc] = useState<string>('/logo.png'); // Image par défaut
+  const [logoSrc, setLogoSrc] = useState<string>('https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=200&h=80&fit=crop'); // Image par défaut
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

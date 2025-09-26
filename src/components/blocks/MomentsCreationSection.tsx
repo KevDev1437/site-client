@@ -15,25 +15,25 @@ export default function MomentsCreationSection() {
   const [moments, setMoments] = useState<MomentCard[]>([
     {
       id: 1,
-      image: '/image1.jpg', // Image par défaut
+      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop', // Image par défaut
       title: 'Imagine de nouvelles idées',
       description: 'Laisse libre cours à ton imagination dans nos ateliers d\'écriture créative'
     },
     {
       id: 2,
-      image: '/image2.jpg', // Image par défaut
+      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop', // Image par défaut
       title: 'Laisse courir ton pinceau',
       description: 'Découvre la peinture dans une ambiance détendue et bienveillante'
     },
     {
       id: 3,
-      image: '/image3.jpg', // Image par défaut
+      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop', // Image par défaut
       title: 'Libère ta créativité',
       description: 'Explore différentes techniques artistiques à ton rythme'
     },
     {
       id: 4,
-      image: '/image4.jpg', // Image par défaut
+      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=600&fit=crop', // Image par défaut
       title: 'Crée en communauté',
       description: 'Partage tes créations et inspire-toi des autres dans nos ateliers collectifs'
     }
