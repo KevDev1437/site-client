@@ -1,14 +1,12 @@
 import { createClient } from '@/lib/supabase';
-import { NextRequest } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const supabase = createClient();
-    
-    // Récupérer l'utilisateur depuis les headers
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Non autorisé' }), {
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Non authentifié' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -29,6 +27,7 @@ export async function GET(req: NextRequest) {
           cover_url
         )
       `)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
     if (error) {

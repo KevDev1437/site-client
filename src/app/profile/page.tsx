@@ -41,6 +41,13 @@ interface Order {
   updated_at: string;
   workshop?: { title: string; date: string } | null;
   product?: { title: string; price: number } | null;
+  items?: Array<{
+    id: string;
+    quantity: number;
+    unit_amount: number;
+    currency: string;
+    product?: { id: string; title: string; image_url?: string } | null;
+  }>; // présent pour les commandes panier
 }
 
 export default function ProfilePage() {
@@ -369,6 +376,18 @@ export default function ProfilePage() {
                           <p className="text-xs text-gray-500 font-sans mb-1">
                             🛒 Produit: {order.product.title}
                           </p>
+                        )}
+                        {!order.workshop && !order.product && order.items && order.items.length > 0 && (
+                          <div className="text-xs text-gray-500 font-sans mb-1 space-y-1">
+                            <p className="font-semibold">🛍️ Panier ({order.items.length} article{order.items.length>1?'s':''}) :</p>
+                            <ul className="list-disc ml-4 space-y-0.5">
+                              {order.items.map(it => (
+                                <li key={it.id} className="truncate">
+                                  {it.product?.title || 'Produit'} x{it.quantity} — {formatAmount(it.unit_amount * it.quantity, it.currency)}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         )}
                         {!order.workshop && !order.product && (
                           <p className="text-xs text-gray-500 font-sans mb-1">
