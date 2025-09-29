@@ -13,6 +13,13 @@ export default function TestSupabase() {
 
   useEffect(() => {
     const test = async () => {
+      const getErrorMessage = (e: unknown): string | undefined => {
+        if (typeof e === 'object' && e !== null && 'message' in e) {
+          const msg = (e as { message?: unknown }).message;
+          return typeof msg === 'string' ? msg : undefined;
+        }
+        return undefined;
+      };
       try {
         console.log('🔍 Test Supabase - Début');
         
@@ -33,8 +40,8 @@ export default function TestSupabase() {
 
         // Test produits
         console.log('🔄 Test produits...');
-        const { data: products, error: productsError } = await safeSupabaseQuery(() =>
-          supabase
+        const { data: products, error: productsError } = await safeSupabaseQuery(async () =>
+          await supabase
             .from('products')
             .select('*')
             .limit(1)
@@ -44,8 +51,8 @@ export default function TestSupabase() {
 
         // Test ateliers
         console.log('🔄 Test ateliers...');
-        const { data: workshops, error: workshopsError } = await safeSupabaseQuery(() =>
-          supabase
+        const { data: workshops, error: workshopsError } = await safeSupabaseQuery(async () =>
+          await supabase
             .from('workshops')
             .select('*')
             .eq('published', true)
@@ -56,8 +63,8 @@ export default function TestSupabase() {
 
         // Test témoignages
         console.log('🔄 Test témoignages...');
-        const { data: testimonials, error: testimonialsError } = await safeSupabaseQuery(() =>
-          supabase
+        const { data: testimonials, error: testimonialsError } = await safeSupabaseQuery(async () =>
+          await supabase
             .from('testimonials')
             .select('*')
             .limit(1)
@@ -67,9 +74,9 @@ export default function TestSupabase() {
 
         // Résumé
         const summary = {
-          products: { count: products?.length || 0, error: productsError?.message },
-          workshops: { count: workshops?.length || 0, error: workshopsError?.message },
-          testimonials: { count: testimonials?.length || 0, error: testimonialsError?.message }
+          products: { count: products?.length || 0, error: getErrorMessage(productsError) },
+          workshops: { count: workshops?.length || 0, error: getErrorMessage(workshopsError) },
+            testimonials: { count: testimonials?.length || 0, error: getErrorMessage(testimonialsError) }
         };
 
         setDetails(summary);

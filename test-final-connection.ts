@@ -53,8 +53,11 @@ async function runCompleteTest() {
     console.log(`- Produits actifs: ${products?.length || 0}`);
     console.log(`- Ateliers publiés: ${workshops?.length || 0}`);
     console.log(`- Témoignages: ${testimonials?.length || 0}`);
-    
-    if (products?.length > 0 && workshops?.length > 0 && testimonials?.length > 0) {
+  const productsCount = products?.length ?? 0;
+  const workshopsCount = workshops?.length ?? 0;
+  const testimonialsCount = testimonials?.length ?? 0;
+
+  if (productsCount > 0 && workshopsCount > 0 && testimonialsCount > 0) {
       console.log('\n✅ TOUT FONCTIONNE ! Votre site devrait maintenant afficher les données.');
     } else {
       console.log('\n⚠️ Certaines données manquent. Vérifiez les scripts de seeding.');

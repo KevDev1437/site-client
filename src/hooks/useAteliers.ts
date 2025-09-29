@@ -1,6 +1,7 @@
 'use client';
 
 import { createClient } from '@/lib/supabase';
+import { describeSupabaseError, logSupabaseFetch } from '@/lib/supabase-error';
 import { Atelier } from '@/types/atelier';
 import { useEffect, useState } from 'react';
 
@@ -12,8 +13,7 @@ export function useAteliers() {
   useEffect(() => {
     const fetchAteliers = async () => {
       try {
-        console.log('🔄 useAteliers: Début du chargement...');
-        
+  logSupabaseFetch({ table: 'workshops', filters: { published: true } }, 'start');
         const supabase = createClient();
 
         const { data, error } = await supabase
@@ -22,19 +22,21 @@ export function useAteliers() {
           .eq('published', true)
           .order('date', { ascending: true });
 
-        console.log('🔄 useAteliers: Réponse reçue:', { data: data?.length, error });
-
         if (error) {
-          console.error('❌ useAteliers: Erreur Supabase:', error);
-          setError(error.message || 'Erreur lors du chargement des ateliers');
+          const msg = describeSupabaseError(error);
+          logSupabaseFetch({ table: 'workshops' }, 'error', msg);
+          setError(msg);
+        } else if ((data?.length ?? 0) === 0) {
+          logSupabaseFetch({ table: 'workshops', count: 0 }, 'empty');
+          setAteliers([]);
         } else {
-          console.log('✅ useAteliers: Ateliers trouvés:', data?.length);
-          setAteliers(data || []);
+          logSupabaseFetch({ table: 'workshops', count: data!.length }, 'success');
+          setAteliers(data!);
         }
       } catch (err: unknown) {
-        console.error('❌ useAteliers: Erreur complète:', err);
-        const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement des ateliers';
-        setError(errorMessage);
+  const errorMessage = describeSupabaseError(err);
+  logSupabaseFetch({ table: 'workshops' }, 'error', errorMessage);
+  setError(errorMessage);
       } finally {
         setLoading(false);
       }

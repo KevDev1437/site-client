@@ -2,6 +2,7 @@
 
 import { mapSupabaseProduct } from '@/lib/product-utils';
 import { createClient } from '@/lib/supabase';
+import { describeSupabaseError, logSupabaseFetch } from '@/lib/supabase-error';
 import { Product } from '@/types/product';
 import { useEffect, useState } from 'react';
 
@@ -13,28 +14,27 @@ export function useProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        console.log('🔄 useProducts: Début du chargement...');
-        
+        logSupabaseFetch({ table: 'products' }, 'start');
         const supabase = createClient();
-        
         const { data, error } = await supabase
           .from('products')
           .select('*')
           .order('created_at', { ascending: false });
-
-        console.log('🔄 useProducts: Réponse reçue:', { data: data?.length, error });
-
         if (error) {
-          console.error('❌ useProducts: Erreur Supabase:', error);
-          setError(error.message || 'Erreur lors du chargement des produits');
+          const msg = describeSupabaseError(error);
+          logSupabaseFetch({ table: 'products' }, 'error', msg);
+          setError(msg);
+        } else if ((data?.length ?? 0) === 0) {
+          logSupabaseFetch({ table: 'products', count: 0 }, 'empty');
+          setProducts([]);
         } else {
-          console.log('✅ useProducts: Produits trouvés:', data?.length);
-          setProducts((data || []).map(mapSupabaseProduct));
+          logSupabaseFetch({ table: 'products', count: data!.length }, 'success');
+          setProducts(data!.map(mapSupabaseProduct));
         }
       } catch (err: unknown) {
-        console.error('❌ useProducts: Erreur complète:', err);
-        const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement des produits';
-        setError(errorMessage);
+  const errorMessage = describeSupabaseError(err);
+  logSupabaseFetch({ table: 'products' }, 'error', errorMessage);
+  setError(errorMessage);
       } finally {
         setLoading(false);
       }
