@@ -1,6 +1,6 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest } from 'next/server';
 import Stripe from 'stripe';
-import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export const runtime = 'nodejs';
 

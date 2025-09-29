@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import Stripe from "stripe";
 import crypto from 'crypto';
+import Stripe from "stripe";
 
 // Type minimal pour PostgrestError (évite usage de any)
 interface MinimalPostgrestError {
