@@ -17,6 +17,12 @@ export function useProducts() {
         
         const supabase = createClient();
         
+        if (!supabase) {
+          throw new Error('Supabase client non initialisé');
+        }
+
+        console.log('🔄 useProducts: Client Supabase créé, requête en cours...');
+
         const { data, error } = await supabase
           .from('products')
           .select('*')
@@ -26,10 +32,16 @@ export function useProducts() {
 
         if (error) {
           console.error('❌ useProducts: Erreur Supabase:', error);
-          setError(error.message || 'Erreur lors du chargement des produits');
+          throw error;
+        }
+
+        if (!data || data.length === 0) {
+          console.warn('⚠️ useProducts: Aucun produit trouvé');
+          setProducts([]);
         } else {
-          console.log('✅ useProducts: Produits trouvés:', data?.length);
-          setProducts((data || []).map(mapSupabaseProduct));
+          console.log('✅ useProducts: Produits trouvés:', data.length);
+          const mappedProducts = (data || []).map(mapSupabaseProduct);
+          setProducts(mappedProducts);
         }
       } catch (err: unknown) {
         console.error('❌ useProducts: Erreur complète:', err);
@@ -53,12 +65,14 @@ export function useProduct(id: string) {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!id) return;
-
       try {
         console.log('🔄 useProduct: Début du chargement pour ID:', id);
         
         const supabase = createClient();
+        
+        if (!supabase) {
+          throw new Error('Supabase client non initialisé');
+        }
 
         const { data, error } = await supabase
           .from('products')
@@ -70,10 +84,15 @@ export function useProduct(id: string) {
 
         if (error) {
           console.error('❌ useProduct: Erreur Supabase:', error);
-          setError(error.message || 'Produit introuvable');
+          throw error;
+        }
+
+        if (data) {
+          console.log('✅ useProduct: Produit trouvé:', data.title);
+          setProduct(mapSupabaseProduct(data));
         } else {
-          console.log('✅ useProduct: Produit trouvé:', data?.title);
-          setProduct(data ? mapSupabaseProduct(data) : null);
+          console.warn('⚠️ useProduct: Produit non trouvé');
+          setProduct(null);
         }
       } catch (err: unknown) {
         console.error('❌ useProduct: Erreur complète:', err);
@@ -84,7 +103,9 @@ export function useProduct(id: string) {
       }
     };
 
-    fetchProduct();
+    if (id) {
+      fetchProduct();
+    }
   }, [id]);
 
   return { product, loading, error };

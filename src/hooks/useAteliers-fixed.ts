@@ -15,6 +15,12 @@ export function useAteliers() {
         console.log('🔄 useAteliers: Début du chargement...');
         
         const supabase = createClient();
+        
+        if (!supabase) {
+          throw new Error('Supabase client non initialisé');
+        }
+
+        console.log('🔄 useAteliers: Client Supabase créé, requête en cours...');
 
         const { data, error } = await supabase
           .from('workshops')
@@ -26,10 +32,15 @@ export function useAteliers() {
 
         if (error) {
           console.error('❌ useAteliers: Erreur Supabase:', error);
-          setError(error.message || 'Erreur lors du chargement des ateliers');
+          throw error;
+        }
+
+        if (!data || data.length === 0) {
+          console.warn('⚠️ useAteliers: Aucun atelier trouvé');
+          setAteliers([]);
         } else {
-          console.log('✅ useAteliers: Ateliers trouvés:', data?.length);
-          setAteliers(data || []);
+          console.log('✅ useAteliers: Ateliers trouvés:', data.length);
+          setAteliers(data);
         }
       } catch (err: unknown) {
         console.error('❌ useAteliers: Erreur complète:', err);

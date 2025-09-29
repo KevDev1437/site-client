@@ -1,15 +1,10 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  if (!supabase) {
-    return NextResponse.json(
-      { error: "Supabase not configured" },
-      { status: 500 }
-    );
-  }
-
   try {
+    const supabase = createClient();
+    
     const { data: workshops, error } = await supabase
       .from("workshops")
       .select("id, slug, title, date, location, price, seats, price_stripe_id, cover_url, excerpt")

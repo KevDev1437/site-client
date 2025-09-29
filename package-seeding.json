@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "seed": "tsx scripts/seed-database.ts",
+    "seed:products": "tsx -e \"import('./scripts/seed-database.js').then(m => m.seedProducts())\"",
+    "seed:workshops": "tsx -e \"import('./scripts/seed-database.js').then(m => m.seedWorkshops())\"",
+    "seed:testimonials": "tsx -e \"import('./scripts/seed-database.js').then(m => m.seedTestimonials())\""
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0"
+  }
+}
