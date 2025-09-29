@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import Stripe from "stripe";
+import crypto from 'crypto';
 
 // Type minimal pour PostgrestError (évite usage de any)
 interface MinimalPostgrestError {
@@ -26,7 +27,18 @@ async function readRawBody(req: Request) {
 export async function POST(req: Request) {
   const rawBody = await readRawBody(req);
   const sig = req.headers.get("stripe-signature") || "";
-  const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+  const secretRaw = process.env.STRIPE_WEBHOOK_SECRET || "";
+  const secret = secretRaw.trim();
+
+  // Logs de diagnostic minimisés (pas d'exposition du secret complet)
+  const secretFingerprint = secret ? crypto.createHash('sha256').update(secret).digest('hex').slice(0,12) : 'missing';
+  console.log('🔐 Webhook Debug:', {
+    hasSignature: Boolean(sig),
+    signatureLength: sig.length,
+    secretProvided: !!secret,
+    secretFingerprint,
+    rawDiffers: secretRaw !== secret ? 'trimmed' : 'ok'
+  });
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: process.env.STRIPE_API_VERSION as Stripe.LatestApiVersion | undefined,
@@ -66,6 +78,9 @@ export async function POST(req: Request) {
       const currency = session.currency || 'eur';
 
       console.log("🔍 Métadonnées session:", { type, userId, workshopId, productId, amountTotal });
+      if (type === 'workshop' && !workshopId) {
+        console.warn('⚠️ Type workshop sans workshopId dans metadata');
+      }
 
       // Sécurité / validations basiques
       if (!userId || userId === 'anonymous') {
